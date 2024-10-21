@@ -18,9 +18,6 @@ load_dotenv()
 # HuggingFace 임베딩 생성
 embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 
-# # Chroma 벡터스토어에 문서 저장
-# vectorstore = Chroma.from_documents(pages, embeddings, persist_directory="./database")
-
 # 1. Chroma 벡터스토어 로드
 vectorstore = Chroma(persist_directory="./database", embedding_function=embeddings)
 
@@ -28,7 +25,7 @@ vectorstore = Chroma(persist_directory="./database", embedding_function=embeddin
 retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5, "fetch_k": 10}) 
 # K: k개의 문서 검색
 
-# 프롬프트 템플릿 설정
+# 3. 프롬프트 템플릿 설정
 template = """
 [context]: {context}
 ---
@@ -48,15 +45,15 @@ template = """
 """
 prompt = ChatPromptTemplate.from_template(template)
 
-# Google Gemini 모델 생성
+# 4. Google Gemini 모델 생성
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
 
-# 검색 결과 병합 함수
+# 5. 검색 결과 병합 함수
 def merge_pages(pages):
     merged = "\n\n".join(page.page_content for page in pages)
     return merged
 
-# LangChain 체인 구성
+# 6. LangChain 체인 구성
 chain = (
     {"query": RunnablePassthrough(), "context": retriever | merge_pages}
     | prompt
@@ -65,11 +62,10 @@ chain = (
 )
 
 
-# Streamlit UI 구성
+# 7. Streamlit UI
 st.set_page_config(page_title="친절한 제주℃", layout="wide")
 
-st.title("친절한 제주℃ 🍽️")
-st.write("제주도 맛집을 추천받아보세요! 원하시는 맛집 관련 질문을 입력해 주세요.")
+st.title("gemini chatbot test")
 
 # 사용자 입력창
 user_input = st.text_input("질문을 입력하세요", placeholder="예: 추자도 맛집을 추천해줘")
