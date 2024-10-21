@@ -52,7 +52,7 @@ pymupdf4llm = "^0.0"
 
 # 시각화 및 사용자 인터페이스 관련 패키지
 matplotlib = "^3.8.4"
-streamlit = "^1.32.2"
+streamlit = "^1.37.1"
 jupyter = "^1.0.0"
 notebook = "^7.1.2"
 
