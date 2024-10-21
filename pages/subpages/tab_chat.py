@@ -1,5 +1,6 @@
 # tab_chat.py
 import streamlit as st
+from streamlit_float import *
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.vectorstores import Chroma
@@ -61,7 +62,6 @@ def load_model():
                                    temperature=0.5,
                                    max_tokens=5000,
                                    system_instruction=system_instruction)
-    
     print("model loaded...")
     return model
 model = load_model()
@@ -84,8 +84,14 @@ chain = (
 
 
 ### 7. streamlit UI ###
+# 채팅창 아래로 고정
 def show_tab_chat():
     st.subheader("gemini chatbot here")
+
+    with st.container():
+        history = st.container(height=400)
+        user_input = st.chat_input(placeholder="질문을 입력하세요. (예: 추자도 맛집을 추천해줘)",
+                               max_chars=300)
 
     # 대화 이력 초기화
     if 'messages' not in st.session_state:
@@ -97,7 +103,7 @@ def show_tab_chat():
             st.markdown(message['content'])
 
     # 사용자 입력
-    if user_input := st.chat_input("질문을 입력하세요. (예: 추자도 맛집을 추천해줘)"):
+    if user_input:
         st.session_state.messages.append({"role":"user", "content":user_input})
         with st.chat_message("user", avatar="😊"):
             st.markdown(user_input)
@@ -110,7 +116,10 @@ def show_tab_chat():
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         with st.chat_message("assistant", avatar="🍊"):
             st.markdown(assistant_response)
+    float_init(theme=True, include_unstable_primary=False)
 
+    def chat_content():
+        st.session_state['contents'].append(st.session_state.content)
 
     #-----------------------------------------------------------
 

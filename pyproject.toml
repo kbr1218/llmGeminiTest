@@ -58,6 +58,7 @@ notebook = "^7.1.2"
 
 folium="^0.14.0"
 streamlit-folium="^0.22.1"
+streamlit_float
 
 # 딥러닝 및 머신러닝 관련 패키지
 torch = "^2.2.2"
