@@ -17,5 +17,5 @@ print(f"문서 수: {len(pages)}")
 embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 
 # 3. Chroma 벡터스토어에 문서 저장
-vectorstore = Chroma.from_documents(pages, embeddings, persist_directory="./database")
+vectorstore = Chroma.from_documents(pages, embeddings, persist_directory="./database_1000")
 print("벡터스토어 저장 완료!")
