@@ -11,8 +11,8 @@ LAT = 33.38032
 LONG = 126.55
 
 # 데이터프레임 가져오기
-df_month = pd.read_csv("testdata/rank_by_month_type.csv", encoding='cp949')
-df_local = pd.read_csv("testdata\local_over_80.csv", encoding='cp949')
+df_month = pd.read_csv("data/rank_by_month_type.csv", encoding='cp949')
+df_local = pd.read_csv("data/local_over_80.csv", encoding='cp949')
 
 
 def show_tab_trend():
@@ -37,8 +37,8 @@ def show_tab_trend():
         st.warning("⚠️ 카테고리는 최대 5개까지 적용됩니다.")
         graph_selected_type = graph_selected_type[:5]  # max 5
                   
-      st.caption("""1: 매출 상위 10% 이하<br>2: 매출 상위 10\~25%<br>3: 매출 상위 25\~50%<br>4: 매출 상위 50\~75%<br> 
-                  5: 매출 상위 75\~90%<br>6: 매출 상위 90% 초과 (하위 10% 이하)""", unsafe_allow_html=True)
+      st.caption("""1: 상위 10% 이하<br>2: 상위 10\~25%<br>3: 상위 25\~50%<br>4: 상위 50\~75%<br> 
+                  5: 상위 75\~90%<br>6: 상위 90% 초과 (하위 10% 이하)""", unsafe_allow_html=True)
 
     with trend_col1:
       # title
