@@ -5,22 +5,24 @@ import streamlit as st
 st.set_page_config(page_title="main", page_icon="💬", layout="wide",
                    initial_sidebar_state='expanded')
 
-from pages.subpages import sidebar, tab_map, tab_chat, tab_trend
+from pages.subpages import sidebar, tab_chat
+from pages.subpages.modal import more
 
 # CSS 파일 불러오기
 with open('style/chat_page.css', encoding='utf-8') as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
-
 # 사이드바
 with st.sidebar:
     sidebar.show_sidebar()
 
-# tabs
-tab1, tab2, tab3 = st.tabs(['Chat', 'Maps', 'Trends'])
-with tab1:
-    tab_chat.show_tab_chat()
-with tab2:
-    tab_map.show_tab_map()
-with tab3:
-    tab_trend.show_tab_trend()
+# title
+st.title("chat page")
+# st.divider()
+
+if st.button("더 알아보기"):
+    more.show_more_modal()
+
+# 채팅화면 출력
+tab_chat.show_tab_chat()
+
