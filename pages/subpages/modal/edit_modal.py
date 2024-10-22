@@ -34,7 +34,7 @@ def show_edit_modal():
    # 방문 지역 수정 (멀티셀렉트)
    region = st.multiselect(
       "방문 지역을 선택해주세요:",
-      options=["동쪽 제주시", "서쪽 제주시", "동쪽 서귀포시", "서쪽 서귀포시"],
+      options=["동부", "서부", "남부", "북부", "산지", "우도", "비양도", "추자도", "가파도", "마라도"],
       default=st.session_state.get('region', [])
    )
 
