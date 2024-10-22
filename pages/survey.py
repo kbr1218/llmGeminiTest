@@ -4,6 +4,7 @@ import datetime, time
 
 # 이미지 변수 선언
 botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang2.png'
+jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejumap2.png'
 
 # 페이지 제목 설정
 st.set_page_config(page_title="survey", page_icon=":clipboard:", layout="wide",
@@ -250,7 +251,8 @@ else:
                                 <strong>{st.session_state['visit_times']}</strong>을(를) 선택하셨습니다. <br>
                                 마지막 질문입니다. <br>
                                 제주도 <strong>어느 지역의 맛집</strong>을 찾으시나요? <br>
-                                <strong>하나 이상</strong> 선택할 수 있습니다.
+                                <strong>하나 이상</strong> 선택할 수 있습니다. <br>
+                                <img src="{jejuMapImgPath}" class="jejuMap-icon" alt="제주도 지역 구분 지도">
                             </div>
                         </div>
                     </div>
@@ -262,7 +264,7 @@ else:
                     st.write("")
                     visit_region = st.multiselect(
                         "제주도 방문 지역 선택",
-                        options=["동쪽 제주시", "서쪽 제주시", "동쪽 서귀포시", "서쪽 서귀포시"],
+                        options=["동부", "서부", "남부", "북부", "산지", "우도", "비양도", "추자도", "가파도", "마라도"],
                         default=None,
                         label_visibility='collapsed'
                     )
