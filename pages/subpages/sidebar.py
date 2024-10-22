@@ -11,12 +11,6 @@ def show_sidebar():
   else:
     st.subheader(":rainbow[신나는] 제주 여행🏝️")
 
-  # 1-1. 성별
-  if 'gender' in st.session_state:
-      st.markdown(f"**성별**: {st.session_state['gender']}")
-  else:
-      st.warning("성별 정보가 입력되지 않았습니다.")
-
   # 1-2. 연령대
   if 'age' in st.session_state:
       st.sidebar.markdown(f"**연령대**: {st.session_state['age']}")

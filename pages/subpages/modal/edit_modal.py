@@ -8,13 +8,6 @@ def show_edit_modal():
    # 기존 데이터를 불러와서 수정 가능하도록 입력 필드를 제공하는 부분
    st.markdown("### 여행 정보를 변경할 수 있습니다.")
 
-   # 성별 수정 (radio button)
-   gender = st.radio(
-      "성별을 선택해주세요.",
-      options=['남성', '여성'],
-      index=['남성', '여성'].index(st.session_state.get('gender', '남성'))
-   )
-
    # 연령대 수정 (셀렉트박스)
    age = st.selectbox(
       "연령대를 선택해주세요:",
@@ -52,7 +45,6 @@ def show_edit_modal():
          st.warning("방문 지역을 최소 1개 이상 선택해주세요.")
       else:
          # session_state에 수정된 값 저장
-         st.session_state['gender'] = gender
          st.session_state['age'] = age
          st.session_state['visit_dates'] = visit_dates
          st.session_state['visit_times'] = visit_times
