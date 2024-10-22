@@ -1,7 +1,7 @@
 # sidebar.py
 import streamlit as st
 
-from .widgets import weather, calendar
+from .widgets import weather
 from .modal import edit_modal, source_modal
 
 def show_sidebar():
@@ -50,9 +50,6 @@ def show_sidebar():
   
   st.markdown("<hr>", unsafe_allow_html=True)
 
-
-  ### 2. 달력 위젯 ###
-  calendar.show_calendar()  
 
   ### 3. 날씨 위젯 ###
   weather.show_weather()
