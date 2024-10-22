@@ -92,7 +92,7 @@ else:
             <img src="{botImgPath}" class="chat-icon" alt="chatbot">
             <div class="chat-bubble">
                 <div class="chat-text">
-                    <strong>{st.session_state['gender']}</strong>을 선택하셨습니다. <br>
+                    <strong>안녕하세요. {st.session_state['user_name']}</strong>님! <br>
                     다음 질문입니다. <br>
                     사용자의 <strong>연령대</strong>를 선택해주세요.
                 </div>
