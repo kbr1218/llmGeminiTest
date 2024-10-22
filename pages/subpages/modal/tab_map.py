@@ -28,4 +28,4 @@ def show_tab_map():
       ).add_to(m)
         
       # folium 지도를 streamlit에 표시
-      st_folium(m, height=500)
+      st_folium(m, width=500, height=450)
