@@ -28,7 +28,7 @@ with open('style/survey_page.css', encoding='utf-8') as css_file:
 
 # 페이지 내용
 st.title("📋시작 하기 전에")
-st.caption("🚀 caption을 작성하는 부분")
+st.caption("🚀 2024 빅콘테스트 (생성형 AI분야) 팀: 헬로빅콘")
 
 
 ##### progress bar #####
@@ -95,7 +95,7 @@ else:
                 <div class="chat-text">
                     <strong>안녕하세요. {st.session_state['user_name']}</strong>님! <br>
                     다음 질문입니다. <br>
-                    사용자의 <strong>연령대</strong>를 선택해주세요.
+                    사용자의 <strong>연령대</strong>를 알려주세요.
                 </div>
             </div>
         </div>
@@ -142,7 +142,7 @@ else:
                         <strong>{st.session_state['age']}</strong>를 선택하셨습니다. <br>
                         다음 질문입니다. <br>
                         제주도를 언제 방문하실 계획인가요? <br>
-                        <strong>제주도를 방문할 날짜를 선택</strong>해주세요.
+                        <strong>제주도를 방문 기간</strong>을 알려주세요.
                     </div>
                 </div>
             </div>
@@ -197,9 +197,9 @@ else:
                     <img src="{botImgPath}" class="chat-icon" alt="chatbot">
                     <div class="chat-bubble">
                         <div class="chat-text">
-                            방문 날짜를 선택하셨습니다. <br>
+                            좋은 날에 가시네요! <br>
                             다음 질문입니다. <br>
-                            맛집에 <strong>언제 방문하실 계획</strong>인가요? <br>
+                            제주도 맛집 <strong>방문 시간대</strong>를 알려주세요. <br>
                         </div>
                     </div>
                 </div>
@@ -212,7 +212,7 @@ else:
 
                 visit_times = st.radio(
                     "방문 시간대 선택",
-                    options=["아침", "점심", "저녁", "야식", "심야"],
+                    options=["아침(05-11시)", "점심(12-13시)", "오후(14-17시)", "저녁(18-22시)", "심야(23시-04시)"],
                     index=0,                        # 기본값은 첫 번째 항목으로 (아침)
                     label_visibility='collapsed'
                 )
@@ -301,7 +301,8 @@ else:
                                 <div class="chat-text">
                                     감사합니다.🙇‍♂️ <br>
                                     제주도 맛집을 찾기 위한 모든 질문이 끝났습니다. <br>
-                                    <strong>다음 페이지로 넘어가주세요</strong>.
+                                    <strong>월 평균 기온</strong>에 따른 인기 맛집을 <strong>추천받고 싶다면</strong>,
+                                    <strong>아래 버튼을 클릭해 다음 페이지로 넘어가주세요</strong>.
                                 </div>
                             </div>
                         </div>
