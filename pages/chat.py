@@ -2,8 +2,9 @@
 import streamlit as st
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
-from langchain_community.vectorstores import Chroma
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
+# from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from langchain_teddynote import logging
@@ -15,7 +16,6 @@ st.set_page_config(page_title="main", page_icon="💬", layout="wide",
                    initial_sidebar_state='expanded')
 
 from pages.subpages import sidebar, chat_search
-from pages.subpages.modal import more
 
 # CSS 파일 불러오기
 with open('style/chat_page.css', encoding='utf-8') as css_file:
@@ -37,6 +37,8 @@ logging.langsmith("bigcon_langchain_test")
 # HuggingFace 임베딩 생성
 embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 
+test_embedding = embeddings.embed_query("산지 맛집")
+
 ### 1. Chroma 벡터스토어 로드 (테스트용 database_1000에서 불러옴 나중에 수정 필요) ###
 vectorstore = Chroma(persist_directory="./database_1000", embedding_function=embeddings)
 
@@ -52,8 +54,11 @@ region_filter = {
     "area": {"$in": visit_region}
 }
 
+print(f"필터링된 지역: {visit_region}")
+print(f"필터 조건: {region_filter}")
+
 ### 3. 필터를 적용하여 검색기 생성 ###
-retriever = vectorstore.as_retriever(search_type="mmr",
+retriever = vectorstore.as_retriever(search_type="mmr",   #"mmr"
                                      search_kwargs={"k": 8,            # K: k개의 문서 검색
                                                     "fetch_k": 10,
                                                     "filters":region_filter}) 
@@ -71,12 +76,15 @@ template = """
 [visit_dates의 month]의 오전의 평균 기온은 약 00.0도입니다.
 [식당이름]의 [3월] 오전(5시-11시) 방문율은 약 00.00%로 높은 편입니다.
 
-추천 이유:
+추천 이유: {context}  # 문서에서 가져온 데이터를 포함
 
 추가 정보:
 ---
 당신은 주어진 [context]와 필터 조건에 맞게 응답해야 합니다.
 필터된 지역과 문서에 따라 맞춤형 맛집을 3~5개 추천하고, 이유를 데이터 기반으로 설명하세요.
+
+데이터에 대한 설명입니다. 사용자가 요청하는 질문에서 지역 정보를 찾아 area 변수에서 필터링한 후 답변하세요.
+YM: 기준연월(1월~12월), MCT_NM: 가맹점명, MCT_TYPE: 요식관련 30개 업종, temp_05_11: 5시 11시 평균 기온, temp_12_13: 12시 13시 평균 기온, temp_14_17: 14시 17시 평균 기온, temp_18_22: 18시 22시 평균 기온, temp_23_04: 23시 4시 평균 기온, TEMP_AVG: 월(YM) 평균 기온, area: 제주도를 10개의 지역으로 구분: 동부/서부/남부/북부/산지/가파도/마라도/비양도/우도/추자도, ADDR: 가맹점 주소, RANK_CNT: 월별 업종별 이용건수 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용건수가 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임, RANK_AMT: 월별 업종별 이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용금액이 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임, RANK_MEAN: 월별 업종별 건당평균이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 건당평균이용금액이 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임, MON_UE_CNT_RAT: 월요일 이용 건수 비중, TUE_UE_CNT_RAT: 화요일 이용 건수 비중, WED_UE_CNT_RAT: 수요일 이용 건수 비중, THU_UE_CNT_RAT: 목요일 이용 건수 비중, FRI_UE_CNT_RAT: 금요일 이용 건수 비중, SAT_UE_CNT_RAT: 토요일 이용 건수 비중, SUN_UE_CNT_RAT: 일요일 이용 건수 비중, HR_5_11_UE_CNT_RAT: 5시-11시 이용 건수 비중, HR_12_13_UE_CNT_RAT: 12시-13시 이용 건수 비중, HR_14_17_UE_CNT_RAT: 14시-17시 이용 건수 비중, HR_18_22_UE_CNT_RAT: 18시-22시 이용 건수 비중, HR_23_4_UE_CNT_RAT: 23시-4시 이용 건수 비중, LOCAL_UE_CNT_RAT: 현지인 이용 건수 비중 (고객 자택 주소가 제주도인 경우 현지인으로 정의), RC_M12_MAL_CUS_CNT_RAT: 최근 12개월 남성 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_FME_CUS_CNT_RAT: 최근 12개월 여성 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_AGE_UND_20_CUS_CNT_RAT: 최근 12개월 20대 이하 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_AGE_30_CUS_CNT_RAT: 최근 12개월 30대 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_AGE_40_CUS_CNT_RAT: 최근 12개월 40대 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_AGE_50_CUS_CNT_RAT: 최근 12개월 40대 회원수 비중 (기준연월 포함 최근 12개월 집계한 값), RC_M12_AGE_OVR_60_CUS_CNT_RAT: 최근 12개월 60대 이상 회원수 비중 (기준연월 포함 최근 12개월 집계한 값)
 """
 
 # 위의 [context] 정보 내에서 [질의]에 대해 답변 [예시]와 같이 술어를 붙여서 답하세요.
@@ -92,7 +100,7 @@ prompt = ChatPromptTemplate.from_template(template)
 def load_model():
     system_instruction = "당신은 제주도 여행객에게 제주도 맛집을 추천하는 친절한 제주도°C 챗봇입니다. 거짓말을 할 수 없으며, 주어진 데이터를 기반으로 얘기하세요."
     model = ChatGoogleGenerativeAI(model="gemini-1.5-flash",
-                                   temperature=0.5,
+                                   temperature=0.2,
                                    max_tokens=5000,
                                    system_instruction=system_instruction)
     print("model loaded...")
@@ -102,8 +110,14 @@ model = load_model()
 
 ### 6. 검색 결과 병합 함수 ###
 def merge_pages(pages):
-    merged = "\n\n".join(page.page_content for page in pages)
+    merged = "\n\n".join([page.page_content for page in pages if page.page_content])
+
+    # 검색된 문서 리스트 출력 (필터 확인용)
+    for page in pages:
+        print(f"검색된 문서: {page.metadata['area']}")  # 지역 필터 확인을 위해 'area' 필드 출력
+    
     return merged
+    
 
 
 ### 7. LangChain 체인 구성 ###
@@ -125,6 +139,8 @@ chain = (
 ### 8. streamlit UI ###
 st.title("chat page")
 st.divider()
+st.write("embedding 테스트", test_embedding)
+
 
 user_input = st.chat_input(
     placeholder="질문을 입력하세요. (예: 추자도에 있는 맛집을 알려줘)",
@@ -165,9 +181,6 @@ with chat_col1:
 
 with search_col2:
     chat_search.show_search_restaurant()
-
-    if st.button("지도로 확인하기"):
-        more.show_more_modal()
 
 
     #-----------------------------------------------------------
