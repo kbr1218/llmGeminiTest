@@ -7,8 +7,8 @@ import time
 import altair as alt
 
 # 제주도 중심 위도경도 변수 선언
-LAT = 33.38032
-LONG = 126.55
+LAT = 33.55
+LONG = 126.7
 
 # 데이터프레임 가져오기
 df_month = pd.read_csv("data/rank_by_month_type.csv", encoding='cp949')
@@ -131,13 +131,13 @@ def show_tab_trend():
         filtered_data = filtered_data.sample(n=min(5, len(filtered_data)), random_state=st.session_state.random_seed)
 
         # 지도 초기화
-        m = folium.Map(location=[LAT, LONG], zoom_start=10)
+        m = folium.Map(location=[LAT, LONG], zoom_start=9)
 
         # 필터링된 위치에 마커 추가
         for _, row in filtered_data.iterrows():
           # popup에 매장명+주소+이용비중 출력
           iframe = row['MCT_NM']+": <strong>"+row['LOCAL_UE_CNT_RAT']+"</strong>"
-          popup = folium.Popup(iframe, min_width=100, max_width=300)
+          popup = folium.Popup(iframe, min_width=50, max_width=300)
           folium.Marker(
               location=[row['latitude'], row['longitude']],
               popup=popup,
@@ -145,7 +145,7 @@ def show_tab_trend():
           ).add_to(m)
           
         # folium 지도를 streamlit에 표시
-        st_folium(m, width=1000, height=350)
+        st_folium(m, width=500, height=450)
 
         # 선택한 식당 정보를 테이블로 출력
         st.write("**📍매장 정보**")
