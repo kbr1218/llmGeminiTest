@@ -4,7 +4,7 @@ import streamlit as st
 from pages.subpages.modal import more
 
 # 데이터 불러오기
-df = pd.read_csv("data/unique_restaurant.csv", encoding='cp949')
+df = pd.read_csv("data\preprocessed\unique_restaurant.csv", encoding='cp949')
 
 # 검색 함수 정의
 def search(query):

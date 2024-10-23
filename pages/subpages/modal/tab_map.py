@@ -8,9 +8,6 @@ from streamlit_folium import st_folium
 LAT = 33.55
 LONG = 126.55
 
-# 데이터 불러오기
-df = pd.read_csv("data/unique_restaurant.csv", encoding='cp949')
-
 def show_tab_map(fav_restaurants):
   # 제주도 중심 지도
   m = folium.Map(location=[LAT, LONG], zoom_start=9)

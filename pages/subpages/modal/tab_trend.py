@@ -11,8 +11,8 @@ LAT = 33.55
 LONG = 126.7
 
 # 데이터프레임 가져오기
-df_month = pd.read_csv("data/rank_by_month_type.csv", encoding='cp949')
-df_local = pd.read_csv("data/local_over_80.csv", encoding='cp949')
+df_month = pd.read_csv("data\preprocessed\rank_by_month_type.csv", encoding='cp949')
+df_local = pd.read_csv("data\preprocessed\local_over_80.csv", encoding='cp949')
 
 
 def show_tab_trend():
