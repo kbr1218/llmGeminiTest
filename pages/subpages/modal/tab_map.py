@@ -23,7 +23,7 @@ def show_tab_map(fav_restaurants):
         # 선택된 맛집을 지도에 마커 추가
         for _, row in fav_restaurants.iterrows():
           # 팝업 출력창 설정
-          popup = folium.Popup(row['MCT_NM'], min_width=100, max_width=300)
+          popup = folium.Popup(row['MCT_NM'], min_width=10, max_width=100)
 
           folium.Marker(
             location=[row['latitude'], row['longitude']],
