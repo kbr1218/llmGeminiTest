@@ -25,7 +25,7 @@
 
 /* 챗봇 아이콘 */
 .chat-icon {
-  width: 40px;
+  width: 70px;
   margin-right: 5px;
   /* 말풍선과의 간격 */
 }
@@ -36,6 +36,11 @@
   /* 말풍선 안 텍스트 크기 */
   line-height: 1.5;
   /* 텍스트 사이 높이 */
+}
+
+/* 말풍선 텍스트 */
+.chat-bubble .color_orange {
+  color: #F38338;
 }
 
 /* 버튼 컨테이너 (위치조정용) */
