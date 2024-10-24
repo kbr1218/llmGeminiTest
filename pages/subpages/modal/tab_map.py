@@ -32,8 +32,8 @@ def show_tab_map(fav_restaurants):
         st_folium(m, width=500, height=450)
     
     with map_col2:
-      st.write('저장한 맛집들은 여기:')
-      st.dataframe(fav_restaurants[['MCT_NM', 'area', 'ADDR']],
+      st.write("**🏠저장된 맛집**")
+      st.dataframe(fav_restaurants[['MCT_NM', 'ADDR']],
                    hide_index=True)
   
   else:

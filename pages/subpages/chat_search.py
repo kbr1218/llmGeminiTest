@@ -14,7 +14,7 @@ def search(query):
 # 메인 함수
 def show_search_restaurant():
     with st.container():
-      st.caption("제주도℃에게 추천받은 맛집을 검색하고 저장하세요.")
+      st.caption("제주℃에게 추천받은 맛집을 검색하고 저장하세요.")
 
       query = st.text_input("검색하기",
                             key='search_query',
@@ -27,6 +27,8 @@ def show_search_restaurant():
       if query:
           # 검색 결과 반환
           search_results = search(query)
+
+          st.caption(f"검색 결과: {len(search_results)} 개")
 
           if not search_results.empty:
               # 체크박스 추가
