@@ -29,7 +29,7 @@
 
 /* 챗봇 아이콘 */
 .chat-icon {
-  width: 40px;
+  width: 70px;
   margin-right: 5px;             /* 말풍선과의 간격 */
 }
 
@@ -63,11 +63,6 @@
 /* 챗봇 아이콘 */
 .jejuMap-icon {
   width: 500px;
-}
-
-/* 버튼 호버 효과 */
-.chat-bubble .button:hover {
-  background-color: #ff9334;
 }
 
 /* 라디오버튼 수평 배치 */
