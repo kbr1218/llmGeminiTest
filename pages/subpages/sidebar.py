@@ -2,14 +2,14 @@
 import streamlit as st
 
 from .widgets import weather
-from .modal import edit_modal, source_modal
+from .modal import edit_modal
 
 def show_sidebar():
   ### 1. 사용자 정보 ###
   if 'user_name' in st.session_state:
-    st.subheader(f":rainbow[{st.session_state['user_name']}]님의 제주 여행🏝️")
+    st.subheader(f":rainbow[{st.session_state['user_name']}]님의 제주 맛집 탐방🏝️")
   else:
-    st.subheader(":rainbow[신나는] 제주 여행🏝️")
+    st.subheader(":rainbow[신나는] 제주 맛집 탐방🏝️")
 
   # 1-2. 연령대
   if 'age' in st.session_state:
@@ -47,9 +47,3 @@ def show_sidebar():
 
   ### 3. 날씨 위젯 ###
   weather.show_weather()
-
-  st.divider()
-
-  ### 4. 데이터 출처 확인 모달 ###
-  if st.button("뭐라고적지", type='secondary'):
-    source_modal.show_source_modal()
