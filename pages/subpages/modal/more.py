@@ -1,6 +1,6 @@
 # more.py
 import streamlit as st
-from pages.subpages.modal import tab_map, tab_trend
+from pages.subpages.widgets import tab_map, tab_trend
 
 # 좋아요와 지도 탭 모달 화면
 @st.dialog("더 알아보기", width='large')
