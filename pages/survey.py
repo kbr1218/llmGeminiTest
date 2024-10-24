@@ -50,7 +50,7 @@ st.markdown(f"""
         <div class="chat-bubble">
             <div class="chat-text">
                 Hi there🖐️! 안녕하세요.<br>
-                <strong class="title_text">친절한 제주도°C</strong> 입니다.<br>
+                <strong class="title_text">친절한 제주°C</strong> 입니다.<br>
                 5가지 질문을 하겠습니다.<br>
                 먼저, 사용자의 <strong>이름</strong>을 알려주세요.   
             </div>
