@@ -69,38 +69,47 @@ template = """
 ---
 [질의]: {query}
 ---
-[대답 예시]
-제주도 북부에서 30대 여성이 좋아하는 가정식 맛집을 추천해드리겠습니다!
-제주도를 방문하실 날짜는 {visit_dates} 이고, {visit_times} 시간대에 방문하실 계획이군요.
-2023년 제주도 북부의 {visit_dates}월 {visit_times}의 평균 기온은 xx.x°였습니다. # 시간별 기온 데이터 참고  
-같은 기온을 가진 날, {visit_times}에 {visit_region}에서 30대 여성 방문 비중이 높았던 가정식 맛집을 추천드리겠습니다.
-1. **(가맹점명)**: {context} #문서에 있는 기온 데이터를 기반으로 이유 설명
+[예시 응답]
+{visit_dates}에 {visit_region} 지역 방문을 계획하신 {user_age}에게 {visit_times}에 방문하기 좋은 맛집을 추천해드리겠습니다!
+추천 기준:
+ - 기온: {visit_dates}월 {visit_times}에 평균 기온과 유사한 시가에 방문객이 많았던 맛집을 우선 고려했습니다.
+ - 시간대: {visit_times} 이용 건수 비중이 높은 가맹점을 우선 고려했습니다.  
+
+추천 맛집:
+- **가맹점명**: {visit_dates}월의 평균 기온은 xx.xx°이고, 특히, {visit_times}의 평균 기온은 xx.xx°입니다. {visit_times}의 이용 건수 비중이 xx.xx%로 높습니다. 월별/업종별 이용 건수 순위도 x위로 높은 편입니다.
+
 ----
 [추가 정보]
-당신은 주어진 [context]와 사용자가 선택한 지역 조건에 맞게 응답해야 합니다.
-you must answer based on {visit_dates} monthly, {visit_times} hourly temperature data. 
-당신은 반드시 주어진 기온 데이터를 사용하여 응답해야 합니다. 시간별 평균 기온 데이터를 반드시 참고하세요.
-visit_dates 변수와 visit_region 변수, visit_times 변수 문서에 따라 맞춤형 맛집을 2개 또는 3개 추천하고, 이유를 데이터 기반으로 설명하세요.
+당신은 주어진 [context]에 맞게 응답해야 합니다. If you can't find data, say you don't know.
+you must fill "xx.xx" in example answer based on {visit_dates}, {visit_times} average temperature data or 월별_업종별_이용건수_순위, 시간별 이용건수_비중 data.
+{visit_dates}와 {visit_region}, {visit_times}에 따라 맞춤형 맛집을 2개 또는 3개 추천하고, 이유를 데이터 기반으로 설명하세요, 데이터를 찾지 못한다면 통계를 생략해도 좋습니다.
+추천 기준은 다음과 같습니다.
+- 기온: 제공된 월별&시간별 평균 기온 데이터를 기반으로 비슷한 기온의 날에 방문객이 많았던 가맹점를 추천합니다.
+- 시간대: 시간대별 이용 건수 비중이 높은 가맹점을 우선 추천합니다.
 
 [데이터 설명]
+{user_age}: 사용자의 연령대,
+{visit_dates}: 사용자가 제주도를 방문하는 기간,
+{visit_times}: 사용자가 맛집을 방문할 시간,
+{visit_region}: 사용자가 방문하는 제주도 지역,
 기준년월-2023년 1월~12월,
 업종-요식관련 30개 업종으로 구분 (업종이 '커피'일 경우 '카페' 뜻함 ),
 지역-제주도를 10개의 지역으로 구분(동부/서부/남부/북부/산지/가파도/마라도/비양도/우도/추자도),
 주소-가맹점 주소,
-월별_업종별_이용건수_순위-월별 업종별 이용건수 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용건수가 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임,
-월별_업종별_이용금액_순위-월별 업종별 이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용금액이 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임,
-건당_평균_이용금액_순위-월별 업종별 건당평균이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 건당평균이용금액이 포함되는 분위수 구간 * 1:상위10%이하 2:상위10~25% 3:상위25~50% 4:상위50~75% 5:상위75~90% 6:상위90% 초과(하위10%이하) * 상위 30% 매출 가맹점 내 분위수 구간임,
-현지인_이용_건수_비중-고객 자택 주소가 제주도인 경우를 현지인으로 정의
+월별_업종별_이용건수_순위: 월별 업종별 이용건수 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용건수가 포함되는 분위수 구간 * 1:상위 10%이하 2:상위 10~25% 3:상위 25~50% 4:상위 50~75% 5:상위 75~90% 6:상위 90% 초과(하위 10%이하),
+월별_업종별_이용금액_순위: 월별 업종별 이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 이용금액이 포함되는 분위수 구간 * 1:상위 10%이하 2:상위 10~25% 3:상위 25~50% 4:상위 50~75% 5:상위 75~90% 6:상위 90% 초과(하위 10%이하),
+건당_평균_이용금액_순위: 월별 업종별 건당평균이용금액 분위수 구간을 6개 구간으로 집계 시 해당 가맹점의 건당 평균 이용금액이 포함되는 분위수 구간 * 1:상위 10%이하 2:상위 10~25% 3:상위 25~50% 4:상위 50~75% 5:상위 75~90% 6:상위 90% 초과(하위 10%이하),
+현지인_이용_건수_비중: 고객 자택 주소가 제주도인 경우를 현지인으로 정의
 """
 prompt = ChatPromptTemplate.from_template(template)
 
 
 ### 6. Google Gemini 모델 생성 ###
-@st.cache_resource
+# @st.cache_resource
 def load_model():
     system_instruction = (
         "당신은 제주도 여행객에게 제주도 맛집을 추천하는 '친절한 제주°C' 챗봇입니다. "
-        "거짓말을 할 수 없으며, 주어진 데이터를 기반으로 얘기하세요."
+        "사용자가 사전에 제공한 데이터({user_age}, {visit_dates}, {start_month}, {end_month}, {visit_times}, {visit_region})를 기반으로 얘기하세요."
     )
     model = ChatGoogleGenerativeAI(
         model="gemini-1.5-flash",
@@ -146,6 +155,18 @@ user_input = st.chat_input(
 )
 
 chat_col1, search_col2 = st.columns([2, 1])
+with search_col2:
+    chat_search.show_search_restaurant()
+
+    # 채팅 기록 초기화
+    if st.button("채팅 기록 초기화", type='primary'):
+        st.session_state.messages = [
+            {"role": "assistant", "content": """안녕하세요!  
+            제주도의 지역/시간별 기온 데이터에 기반하여 맛집을 추천하는 :orange[**친절한 제주°C**]입니다.  
+            언제든지 질문해주세요."""}
+        ]
+        st.rerun()
+
 with chat_col1:
     if 'messages' not in st.session_state:
         st.session_state.messages = [
@@ -153,6 +174,11 @@ with chat_col1:
             제주도의 지역/시간별 기온 데이터에 기반하여 맛집을 추천하는 :orange[**친절한 제주°C**]입니다.  
             언제든지 질문해주세요."""}
         ]
+    # 필수 정보가 입력되지 않았을 경우 오류 메시지 출력
+    if not (user_age and visit_dates and visit_times and visit_region):
+        st.error("사용자 정보(나이, 방문 날짜, 시간, 지역)가 누락되었습니다. 사이드바에서 정보를 입력해 주세요.")
+        st.stop()  # 이후 코드를 실행하지 않도록 중단
+
 
     for message in st.session_state.messages:
         avatar = "🧑🏻" if message['role'] == 'user' else botImgPath
@@ -167,12 +193,16 @@ with chat_col1:
         # 추천 생성 중 스피너
         with st.spinner("맛집 찾는 중..."):
             # chain.invoke에서 개별 변수로 전달
-            assistant_response = chain.invoke(user_input)
+            assistant_response = chain.invoke(user_input+f"""
+                                              user_name: {user_name},
+                                              user_age: {user_age},
+                                              visit_region: {visit_region},
+                                              visit_dates: {visit_dates},
+                                              visit_times: {visit_times},
+                                              chat_history: {st.session_state.messages}
+                                              """)
 
         # Assistant 응답 기록에 추가 및 출력
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         with st.chat_message("assistant", avatar=botImgPath):
-            st.markdown(assistant_response)
-
-with search_col2:
-    chat_search.show_search_restaurant()
+            st.markdown(assistant_response)  
