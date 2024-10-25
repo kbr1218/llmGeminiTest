@@ -38,7 +38,7 @@ embeddings  = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 
 
 ## 2. Chroma 벡터스토어 로드 ###
-vectorstore = Chroma(persist_directory="./database_all_with_meta", embedding_function=embeddings)
+vectorstore = Chroma(persist_directory="./database_ALL_with_meta", embedding_function=embeddings)
 
 
 ## 3. 사용자 정보 기반 지역 필터링 ###
@@ -76,16 +76,14 @@ template = """
  - 시간대: {visit_times} 이용 건수 비중이 높은 가맹점을 우선 고려했습니다.  
 
 추천 맛집:
-- **가맹점명**: {visit_dates}월의 평균 기온은 xx.xx°이고, 특히, {visit_times}의 평균 기온은 xx.xx°입니다. {visit_times}의 이용 건수 비중이 xx.xx%로 높습니다. 월별/업종별 이용 건수 순위도 x위로 높은 편입니다.
+- **가맹점명**: {visit_dates}월의 평균 기온과 {visit_times}의 평균 기온 데이터를 수치를 알려주며 선택한 이유를 설명
+              : {visit_times}의 이용 건수 비중과 월별/업종별 이용 건수 순위를 이용하여 선택한 이유를 설명.
 
 ----
 [추가 정보]
 당신은 주어진 [context]에 맞게 응답해야 합니다. If you can't find data, say you don't know.
-you must fill "xx.xx" in example answer based on {visit_dates}, {visit_times} average temperature data or 월별_업종별_이용건수_순위, 시간별 이용건수_비중 data.
+you must answer based on {visit_dates}, {visit_times} average temperature data or 월별_업종별_이용건수_순위, 시간별 이용건수_비중 data.
 {visit_dates}와 {visit_region}, {visit_times}에 따라 맞춤형 맛집을 2개 또는 3개 추천하고, 이유를 데이터 기반으로 설명하세요, 데이터를 찾지 못한다면 통계를 생략해도 좋습니다.
-추천 기준은 다음과 같습니다.
-- 기온: 제공된 월별&시간별 평균 기온 데이터를 기반으로 비슷한 기온의 날에 방문객이 많았던 가맹점를 추천합니다.
-- 시간대: 시간대별 이용 건수 비중이 높은 가맹점을 우선 추천합니다.
 
 [데이터 설명]
 {user_age}: 사용자의 연령대,
