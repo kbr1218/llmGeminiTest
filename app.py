@@ -22,7 +22,7 @@ st.markdown(
 )
 
 # CSS 파일 불러오기
-with open('style/start_page.css', encoding='utf-8') as css_file:
+with open('style.css', encoding='utf-8') as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
 # 타이틀 이미지

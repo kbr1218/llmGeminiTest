@@ -23,7 +23,7 @@ st.markdown(
 )
 
 # CSS 파일 불러오기
-with open('style/survey_page.css', encoding='utf-8') as css_file:
+with open('style.css', encoding='utf-8') as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
 # 페이지 내용
@@ -75,7 +75,7 @@ else:
         <div class="user-chat-container">
             <div class="chat-bubble">
                 <div class="user-chat-text">
-                    {st.session_state['user_name']} 입니다.
+                    <span class='makebold'>{st.session_state['user_name']}</span> 입니다.
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@ else:
             <div class="user-chat-container">
                 <div class="chat-bubble">
                     <div class="user-chat-text">
-                        {st.session_state['age']} 입니다.
+                        <span class='makebold'>{st.session_state['age']}</span> 입니다.
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@ else:
                 <div class="user-chat-container">
                     <div class="chat-bubble">
                         <div class="user-chat-text">
-                            {st.session_state['visit_dates'][0]}부터 {st.session_state['visit_dates'][1]}까지 입니다.
+                            <span class='makebold'>{st.session_state['visit_dates'][0]}부터 {st.session_state['visit_dates'][1]}까지</span> 입니다.
                         </div>
                     </div>
                 </div>
@@ -233,7 +233,7 @@ else:
                     <div class="user-chat-container">
                             <div class="chat-bubble">
                                 <div class="user-chat-text">
-                                    {st.session_state['visit_times']}에 방문할 계획입니다.
+                                    <span class='makebold'>{st.session_state['visit_times']}</span>에 방문할 계획입니다.
                                 </div>
                             </div>
                     </div>
@@ -287,7 +287,7 @@ else:
                         <div class="user-chat-container">
                             <div class="chat-bubble">
                                 <div class="user-chat-text">
-                                    {', '.join(st.session_state['region'])}를 선택했습니다.
+                                    <span class='makebold'>{', '.join(st.session_state['region'])}</span>를 선택했습니다.
                                 </div>
                             </div>
                         </div>
