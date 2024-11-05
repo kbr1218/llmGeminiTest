@@ -2,7 +2,7 @@
 import streamlit as st
 import datetime
 
-jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejumap2.png'
+jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejuMap_3.png'
 
 # 수정하기 모달
 @st.dialog("여행 정보 수정하기🖋️")
@@ -40,7 +40,7 @@ def show_edit_modal():
    
    region = st.multiselect(
       "방문 지역을 선택해주세요:",
-      options=["동부", "서부", "남부", "북부", "산지", "우도", "비양도", "추자도", "가파도", "마라도"],
+      options=["동부", "서부", "남부", "북부", "우도", "비양도", "추자도", "가파도", "마라도"],
       default=st.session_state.get('region', [])
    )
 

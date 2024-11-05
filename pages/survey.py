@@ -4,7 +4,7 @@ import datetime, time
 
 # 이미지 변수 선언
 botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang3.png'
-jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejumap2.png'
+jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejuMap_3.png'
 
 # 페이지 제목 설정
 st.set_page_config(page_title="survey", page_icon=":clipboard:", layout="wide",
@@ -265,7 +265,7 @@ else:
                     st.write("")
                     visit_region = st.multiselect(
                         "제주도 방문 지역 선택",
-                        options=["동부", "서부", "남부", "북부", "산지", "우도", "비양도", "추자도", "가파도", "마라도"],
+                        options=["동부", "서부", "남부", "북부", "우도", "비양도", "추자도", "가파도", "마라도"],
                         default=None,
                         label_visibility='collapsed'
                     )
