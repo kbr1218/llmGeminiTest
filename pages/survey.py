@@ -139,7 +139,7 @@ else:
                 <img src="{botImgPath}" class="chat-icon" alt="chatbot">
                 <div class="chat-bubble">
                     <div class="chat-text">
-                        <strong>{st.session_state['age']}</strong>를 선택하셨습니다. <br>
+                        <strong>{st.session_state['age']}</strong>을(를) 선택하셨습니다. <br>
                         세 번째 질문입니다. <br>
                         제주도를 언제 방문하실 계획인가요? <br>
                         <strong>제주도 방문 기간</strong>을 알려주세요.
