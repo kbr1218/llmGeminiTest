@@ -43,8 +43,7 @@ st.markdown(f"""
         <img src="{botImgPath}" class="chat-icon" alt="chatbot">
         <div class="chat-bubble">
             <div class="chat-text">
-                <strong class="color_orange">🏵️친절한 제주도°C:</strong><br>
-                혼저옵서예! <br>
+                혼저옵서예! <strong class="color_orange">🏵️친절한 제주도°C</strong>입니다. <br>
                 신한카드 <strong>'제주 가맹점 이용 데이터'</strong>와 기상청 <strong>'월별 시간별 기온 데이터'</strong> 기반으로<br>
                 삼춘한테 딱 맞는 맛집들 추천해드릴게<span class="color_orange">마씸 🍊</span>
             </div>
