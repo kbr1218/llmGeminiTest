@@ -10,18 +10,18 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 import pandas as pd
 
-DB_PATH = './sample_1500_vectorstore'
+DB_PATH = './sample_1000_vectorstore'
 
 
 ### 01. CSV 파일에서 문서 로드 ###
-loader = CSVLoader('data\sample_without_meta.csv', encoding='cp949')
+loader = CSVLoader('data\sample_noTemp_with_meta.csv', encoding='cp949')
 docs = loader.load()
 print(f"문서의 수: {len(docs)}")
 
 
 
 ### 02. pandas로 데이터프레임 칼럼명 가져오기 ###
-csv_path = 'data\sample_without_meta.csv'
+csv_path = 'data\sample_noTemp_with_meta.csv'
 df = pd.read_csv(csv_path, encoding='cp949')
 column_names = df.columns
 
@@ -32,7 +32,8 @@ for _, row in df.iterrows():
   # 필요한 메타데이터 설정
   metadata = {
     '지역': row['지역'],
-    '업종': row['업종']
+    '업종': row['업종'],
+    '가맹점명': row['가맹점명']
   }
   # 각 행의 데이터를 문서로 변환
   doc = Document(
@@ -72,6 +73,5 @@ vectorstore = Chroma.from_documents(
   documents=splits,
   embedding=embeddings,
   persist_directory=DB_PATH,
-  collection_name='sample_1500'
 )
 print("벡터스토어 저장 완료!")
