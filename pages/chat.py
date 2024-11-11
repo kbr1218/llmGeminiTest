@@ -74,25 +74,29 @@ retriever = vectorstore.as_retriever(
 
 
 ### 6. 프롬프트 템플릿 설정 ###
-template = """
-You are an assistant for question-answering tasks named '친절한 제주도°C' which recommends restaurants in Jeju Island based on the given data.
+template = """You are an assistant for question-answering tasks named '친절한 제주°C' which recommends restaurants in Jeju Island based on the given data.
 If you don't know the answer, just say that you don't know. Recommend three places maximum and keep the answer concise.
 
 When starting a response, provide a summary of the relevant temperature information from the retrieved context for {visit_month} and {visit_times}, and then continue with restaurant recommendations.
 
 Format your response in the following structure:
-"{user_name}님, {visit_month}월 {visit_times}에 방문하실 {visit_region} 지역의 맛집을 추천드립니다."
+"{visit_month}월 {visit_times}에 {visit_region} 지역에서 인기 있는 맛집을 소개합니다.
 
-추천 맛집:
 1. [**가맹점명**]:
 - 주소: [주소]
-- {visit_month}월 {visit_region} 지역의 월별 업종별 이용건수 순위는 [월별 업종별 이용건수 순위]위였습니다.
+- {visit_month}월 {visit_region} 지역의 월별 업종별 이용건수 순위는 [월별 업종별 이용건수 순위]위입니다.
 - 월별 업종별 이용금액 순위는 [월별 업종별 이용금액 순위]위이고, 건당 평균 이용금액 순위는 [월별 업종별 건당 평균 이용금액 순위]위입니다.
-- 연령대 {user_age}의 방문 비율이 [연령대별 이용비중]%로 {user_name}과 비슷한 연령대의 고객이 많이 찾았습니다.
+- 연령대 {user_age}의 방문 비율이 **[연령대별 이용비중]%**로 {user_name}과 비슷한 연령대의 고객이 많이 찾았습니다.
+- 주변 관광지: 맛집과 가까운 곳에 **[맛집 주변 관광지]**가 있습니다.
 
-주변 관광지:
-맛집과 가까운 곳에 [맛집 주변 관광지]가 있습니다.
-즐거운 식사와 멋진 방문 되시길 바랍니다!"
+2. [**가맹점명**]:
+- 주소: [주소]
+- {visit_month}월 {visit_region} 지역의 월별 업종별 이용건수 순위는 [월별 업종별 이용건수 순위]위입니다.
+- 월별 업종별 이용금액 순위는 [월별 업종별 이용금액 순위]위이고, 건당 평균 이용금액 순위는 [월별 업종별 건당 평균 이용금액 순위]위입니다.
+- 연령대 {user_age}의 방문 비율이 **[연령대별 이용비중]%**로 {user_name}과 비슷한 연령대의 고객이 많이 찾았습니다.
+- 주변 관광지: 맛집과 가까운 곳에 **[맛집 주변 관광지]**가 있습니다.
+
+즐거운 여행 되시길 바랍니다!"
 
 Use the following pieces of retrieved context to answer the question.
 [context]: {context}
@@ -100,11 +104,11 @@ Use the following pieces of retrieved context to answer the question.
 [질의]: {query}
 ---
 [데이터 설명]
-{user_age}: 사용자의 연령대,
-{visit_month}: 사용자가 제주도를 방문하는 월,
-{visit_times}: 사용자가 맛집을 방문할 시간,
-{visit_region}: 사용자가 방문하는 제주도 지역,
-업종-요식관련 30개 업종으로 구분 (업종이 '커피'일 경우 '카페'를 뜻함)
+- {visit_month}: The month of visit to Jeju Island,
+- {visit_times}: The time of visit to the restaurant,
+- {visit_region}: The region in Jeju Island that is being visited,
+- {context}: Relevant data for restaurant recommendations and user interests.
+- 업종: 요식관련 30개 업종으로 구분 (업종이 '커피'일 경우 '카페'를 뜻함)
 """
 prompt = ChatPromptTemplate.from_template(template)
 
@@ -208,12 +212,14 @@ with chat_col1:
 
         # 추천 생성 중 스피너
         with st.spinner("맛집 찾는 중..."):
-            query_text = user_input + f"""user_name: {user_name},
-                                          user_age: {user_age},
-                                          visit_region: {visit_region},
-                                          visit_month: {visit_month},
-                                          visit_times: {visit_times}"""
-            
+            query_text = (
+                f"질문: {user_input}\n\n"
+                f"user_name: {user_name}\n"
+                f"user_age: {user_age}\n"
+                f"visit_region: {visit_region}\n"
+                f"visit_month: {visit_month}\n"
+                f"visit_times: {visit_times}"
+            )
             # chain.invoke에서 개별 변수로 전달
             assistant_response = rag_chain.invoke(query_text)
 
