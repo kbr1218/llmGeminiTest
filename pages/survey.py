@@ -141,8 +141,8 @@ else:
                     <div class="chat-text">
                         <strong>{st.session_state['age']}</strong>을(를) 선택하셨습니다. <br>
                         세 번째 질문입니다. <br>
-                        제주도를 언제 방문하실 계획인가요? <br>
-                        <strong>제주도 방문 기간</strong>을 알려주세요.
+                        맛집을 언제 방문하실 계획인가요? <br>
+                        <strong>맛집 방문 일자</strong>을 알려주세요.
                     </div>
                 </div>
             </div>
@@ -150,15 +150,15 @@ else:
 
         # 날짜 변수
         today = datetime.datetime.now()
-        one_week_later = today + datetime.timedelta(days=7)
+        one_year_later = today.replace(year=today.year + 1)
 
         if 'visit_dates' not in st.session_state:
-            # 날짜 선택 (기본값은 현재 날짜 ~ 일주일 후)
+            # 날짜 선택 (기본값 오늘)
             visit_dates = st.date_input(
                 "제주도 방문일 선택",
-                value=(today, one_week_later),                       # 날짜 기본값
-                min_value=today,                                     # 선택 가능 최소 날짜: 오늘
-                max_value=today.replace(year=today.year + 1),        # 선택 가능 최대 날짜: 일년 후
+                value=today,                     # 날짜 기본값
+                min_value=today,                 # 선택 가능 최소 날짜: 오늘
+                max_value=one_year_later,        # 선택 가능 최대 날짜: 일년 후
                 format="YYYY-MM-DD",
                 label_visibility='collapsed'
             )
@@ -181,7 +181,7 @@ else:
                 <div class="user-chat-container">
                     <div class="chat-bubble">
                         <div class="user-chat-text">
-                            <span class='makebold'>{st.session_state['visit_dates'][0]}부터 {st.session_state['visit_dates'][1]}까지</span> 입니다.
+                            <span class='makebold'>{st.session_state['visit_dates']}</span>에 방문 예정입니다.
                         </div>
                     </div>
                 </div>

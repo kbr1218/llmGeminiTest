@@ -19,7 +19,7 @@ def show_sidebar():
 
   # 1-3. 방문 날짜
   if 'visit_dates' in st.session_state:
-    visit_dates_str = f"{st.session_state['visit_dates'][0]} ~ {st.session_state['visit_dates'][1]}"
+    visit_dates_str = f"{st.session_state['visit_dates']}"
     st.sidebar.markdown(f"**방문 날짜**: {visit_dates_str}")
   else:
     st.sidebar.warning("날짜 정보가 입력되지 않았습니다.")

@@ -19,7 +19,7 @@ def show_edit_modal():
    today = datetime.datetime.now()
    visit_dates = st.date_input(
       "방문 날짜를 선택해주세요:",
-      value=st.session_state.get('visit_dates', (today, today + datetime.timedelta(days=7))),
+      value=st.session_state.get('visit_dates', today),
       min_value=today,
       max_value=today.replace(year=today.year + 1),
    )
