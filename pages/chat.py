@@ -1,5 +1,6 @@
 # chat.py
 import streamlit as st
+from datetime import datetime
 
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -54,6 +55,20 @@ visit_dates = st.session_state.get('visit_dates', None)
 # 월 정보만 출력
 visit_month = f"{visit_dates.month}월" if visit_dates else ""
 
+### 3-1. 사용자 데이터와 일치하는 컬럼명 텍스트 생성 ###
+age_col = f'{user_age} 회원수 비중'
+
+weekday_idx = visit_dates.weekday()
+weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+weekday_col = f'{weekdays[weekday_idx]} 이용건수 비중'
+
+time_col = {
+    "아침 (05-11시)": "5시-11시 이용건수 비중",
+    "점심 (12-13시)": "12시-13시 이용건수 비중",
+    "오후 (14-17시)": "14시-17시 이용건수 비중",
+    "저녁 (18-22시)": "18시-22시 이용건수 비중",
+    "심야 (23-04시)": "23시-4시 이용건수 비중"
+    }.get(visit_times)
 
 ### 4. 기온 데이터 로드 ###
 temp_retriever = temperature_vectorstore.as_retriever(
@@ -72,43 +87,44 @@ retriever = vectorstore.as_retriever(
     # filters={"지역":visit_region}
 )
 
-
+# Do not include unnecessary information. 
 ### 6. 프롬프트 템플릿 설정 ###
-template = """You are an assistant for question-answering tasks named '친절한 제주°C' which recommends restaurants in Jeju Island based on the given data.
-If you don't know the answer, just say that you don't know. Recommend three places maximum and keep the answer concise.
+template = """
+You are an assistant named '친절한 제주°C' specializing in recommending restaurants in Jeju Island based on specific data.
+Use the provided data to answer accurately. If unsure, respond that you don't know.
 
-When starting a response, provide a summary of the relevant temperature information from the retrieved context for {visit_month} and {visit_times}, and then continue with restaurant recommendations.
+- When the user's question is a general recommendation request, follow the structured format below.
+- If the user's question is asking for a specific piece of information (e.g., "What is the local visitation rate for 공명식당?"), provide only the requested information without additional formatting or explanation.
+- Always base your answer strictly on the given data context.
 
-Format your response in the following structure:
-"{visit_month}월 {visit_times}에 {visit_region} 지역에서 인기 있는 맛집을 소개합니다.
+When making recommendations, consider the user's visiting day, age group, and preferred time slot, recommending 1-3 places at most.
+You have to start with a summary of the relevant temperature information from the retrieved context for {visit_month} and {visit_times}, and then continue with restaurant recommendations.
 
-1. [**가맹점명**]:
-- 주소: [주소]
-- {visit_month}월 {visit_region} 지역의 월별 업종별 이용건수 순위는 [월별 업종별 이용건수 순위]위입니다.
-- 월별 업종별 이용금액 순위는 [월별 업종별 이용금액 순위]위이고, 건당 평균 이용금액 순위는 [월별 업종별 건당 평균 이용금액 순위]위입니다.
-- 연령대 {user_age}의 방문 비율이 **[연령대별 이용비중]%**로 {user_name}과 비슷한 연령대의 고객이 많이 찾았습니다.
-- 주변 관광지: 맛집과 가까운 곳에 **[맛집 주변 관광지]**가 있습니다.
+The following columns are relevant for finding the best recommendations:
+- Weekday column: {{day_column}}
+- Time slot column: {{time_column}}
+- Age group column: {{age_column}}
 
-2. [**가맹점명**]:
-- 주소: [주소]
-- {visit_month}월 {visit_region} 지역의 월별 업종별 이용건수 순위는 [월별 업종별 이용건수 순위]위입니다.
-- 월별 업종별 이용금액 순위는 [월별 업종별 이용금액 순위]위이고, 건당 평균 이용금액 순위는 [월별 업종별 건당 평균 이용금액 순위]위입니다.
-- 연령대 {user_age}의 방문 비율이 **[연령대별 이용비중]%**로 {user_name}과 비슷한 연령대의 고객이 많이 찾았습니다.
-- 주변 관광지: 맛집과 가까운 곳에 **[맛집 주변 관광지]**가 있습니다.
+**Structured Format** (for general recommendations):
+"**{{user_name}}**님! {{visit_month}}월 {{visit_times}}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
+{{visit_month}}월 {{visit_times}}의 {{visit_region}}의 평균 기온은 {{average_temperature}}입니다. 여행에 참고하시길 바랍니다. \n
 
-즐거운 여행 되시길 바랍니다!"
+**{{가맹점명}}**:
+- 주소: {{주소}}
+- {{visit_month}}월 {{visit_region}} 지역에서 {{user_age}}의 방문 비율이 {{age_col}}%로 {{user_name}}님과 비슷한 연령대의 고객이 많이 찾았습니다.
+- {{user_name}}님이 방문하시려는 {{weekdays[weekday_idx]}}에는 방문 비중이 {{weekday_col}}%입니다.
+- {{visit_times}}의 이용 건수 비중은 {{time_col}}% 으로 높은/낮은 편입니다.
+- 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
+- 주변 관광지: 맛집과 가까운 곳에 **{{맛집 주변 관광지}}**이(가) 있습니다.
 
-Use the following pieces of retrieved context to answer the question.
+즐거운 식사 되시길 바랍니다!"
+
+**When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format.
+
+Use the provided context and user information strictly:
 [context]: {context}
 ---
 [질의]: {query}
----
-[데이터 설명]
-- {visit_month}: The month of visit to Jeju Island,
-- {visit_times}: The time of visit to the restaurant,
-- {visit_region}: The region in Jeju Island that is being visited,
-- {context}: Relevant data for restaurant recommendations and user interests.
-- 업종: 요식관련 30개 업종으로 구분 (업종이 '커피'일 경우 '카페'를 뜻함)
 """
 prompt = ChatPromptTemplate.from_template(template)
 
@@ -118,14 +134,13 @@ prompt = ChatPromptTemplate.from_template(template)
 def load_model():
     system_instruction = """당신은 제주도 여행객에게 제주도 맛집을 추천하는 '친절한 제주°C' 챗봇입니다.
         사용자가 대화 중에 언급한 업종을 파악하고 해당 업종의 맛집을 추천하세요.
-        연령대에 따라 관련 칼럼의 값을 고려하고, 사용자가 방문하고자 하는 시간대의 이용건수 비중을 참고하여 추천하세요.
         주변 관광지가 있다면 이를 언급하여 사용자에게 친근하게 권장하세요.
         멀티턴 대화를 지원하며 이전 대화의 맥락을 활용하여 후속 질문에 답변할 수 있습니다.
         Please ensure the response follows the provided format with clear sections and details.
         """
     model = ChatGoogleGenerativeAI(
         model="gemini-1.5-flash",
-        temperature=0,
+        temperature=0.3,
         max_tokens=5000,
         system_instruction=system_instruction
     )
@@ -145,6 +160,10 @@ def retrieve_and_filter_context(_input):
     # temp_retriever와 retriever 각각 호출 및 필터링 후 병합
     temp_docs = filter_results_by_region(temp_retriever.invoke(_input), visit_region)
     main_docs = filter_results_by_region(retriever.invoke(_input), visit_region)
+
+    # 필터링된 결과가 없다면 오류 메시지 반환
+    if not temp_docs and not main_docs:
+        return "말씀하신 지역에 대한 맛집 데이터를 찾을 수 없습니다. 사이드바에서 방문하실 지역을 다시 선택해주세요."
     # 병합 후 형식화
     return format_docs(temp_docs + main_docs)
 
