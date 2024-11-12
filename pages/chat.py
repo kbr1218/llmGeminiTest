@@ -119,7 +119,7 @@ The following columns are relevant for finding the best recommendations:
 
 즐거운 식사 되시길 바랍니다!"
 
-**When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format.
+**When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format with specific rate.
 
 Use the provided context and user information strictly:
 [context]: {context}
@@ -132,11 +132,9 @@ prompt = ChatPromptTemplate.from_template(template)
 ### 7. Google Gemini 모델 생성 ###
 # @st.cache_resource
 def load_model():
-    system_instruction = """당신은 제주도 여행객에게 제주도 맛집을 추천하는 '친절한 제주°C' 챗봇입니다.
-        사용자가 대화 중에 언급한 업종을 파악하고 해당 업종의 맛집을 추천하세요.
-        주변 관광지가 있다면 이를 언급하여 사용자에게 친근하게 권장하세요.
-        멀티턴 대화를 지원하며 이전 대화의 맥락을 활용하여 후속 질문에 답변할 수 있습니다.
-        Please ensure the response follows the provided format with clear sections and details.
+    system_instruction = """당신은 제주도 여행객에게 맛집을 추천하는 '친절한 제주°C' 챗봇입니다. 
+        각 대화에서 필요한 정보를 정확히 제공하고, 사용자의 질문이 후속 질문인 경우 이전 대화의 내용을 바탕으로 답변하세요.
+        필요한 경우 간결하게 정보를 제공하고, 대화의 맥락을 유지하여 질문과 관계 없는 정보를 생략하세요.
         """
     model = ChatGoogleGenerativeAI(
         model="gemini-1.5-flash",
@@ -193,7 +191,7 @@ say_hi_to_user = """안녕하세요!
 언제든지 질문해주세요."""
 
 user_input = st.chat_input(
-    placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 추천해줘)",
+    placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 두 개만 추천해줘)",
     max_chars=150
 )
 
