@@ -57,7 +57,7 @@
 
 /* 제주도씨 말풍선 텍스트 */
 .chat-bubble .chat-text {
-  font-size: 17px;
+  font-size: 16px;
   /* 말풍선 안 텍스트 크기 */
   line-height: 1.5;
   /* 텍스트 사이 높이 */
@@ -76,6 +76,11 @@
 /* 말풍선 텍스트 */
 .chat-bubble .color_orange {
   color: #F38338;
+}
+
+/* 말풍선 텍스트 */
+.chat-bubble .color_blue {
+  color: #197bb9;
 }
 
 /* 챗봇 아이콘 */
