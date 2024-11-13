@@ -74,7 +74,7 @@ if visit_times:
 ### 4. 기온 데이터 로드 ###
 temp_retriever = temperature_vectorstore.as_retriever(
     search_type="mmr",   
-    search_kwargs={"k": 5}  # 가장 관련성 높은 한 개의 문서만 가져오기
+    search_kwargs={"k": 5}  # 가장 관련성 높은 다섯 개의 문서만 가져오기
 )
 
 ### 5. 검색기 생성 ###
@@ -85,7 +85,6 @@ retriever = vectorstore.as_retriever(
                    "lambda_mult": 0.5,    # 결과 다양성 조절 (default: 0.5),
                    'filter': {'지역': {'$in':visit_region}}
                    }
-    # filters={"지역":visit_region}
 )
 
 # Do not include unnecessary information. 
@@ -133,8 +132,6 @@ Structured Format for general recommendations:
   Example:
   "The average local visitation rate for Chinese restaurants in the southern region is 53.2%."
 
-
-
 Use the provided context and user information strictly:
 [context]: {context}
 [previous_chat_history]: {{previous_chat_history}}
@@ -143,8 +140,6 @@ Use the provided context and user information strictly:
 """
 prompt = ChatPromptTemplate.from_template(template)
 
-# **When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format with specific rate.
-# **When a user asks follow-on questions about the last recommendation, answer it by referring to the prevous_chat_history
 
 ### 7. Google Gemini 모델 생성 ###
 # @st.cache_resource
