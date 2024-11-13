@@ -96,7 +96,9 @@ Use the provided data to answer accurately. If unsure, respond that you don't kn
 
 - When the user's question is a general recommendation request, follow the structured format below.
 - If the user's question is asking for a specific piece of information (e.g., "What is the local visitation rate for 공명식당?"), provide only the requested information without additional formatting or explanation.
-- Always base your answer strictly on the given data context.
+- If the user's question is about statistical data (e.g., "What is the highest local visitation rate for Chinese restaurants in the southern region?"), provide the specific statistical value directly and clearly.
+
+Always base your answer strictly on the given data context.
 
 When making recommendations, consider the user's visiting day, age group, and preferred time slot, recommending 1-3 places at most.
 You have to start with a summary of the relevant temperature information from the retrieved context for {visit_month} and {visit_times}, and then continue with restaurant recommendations.
@@ -106,22 +108,32 @@ The following columns are relevant for finding the best recommendations:
 - Time slot column: {{time_column}}
 - Age group column: {{age_column}}
 
-**Structured Format** (for general recommendations):
-"**{{user_name}}**님! {{visit_month}}월 {{visit_times}}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
-🌡️{{visit_month}}월 {{visit_times}}의 {{visit_region}}의 평균 기온은 **{{average_temperature}}**입니다. 여행에 참고하시길 바랍니다. \n
+Structured Format for general recommendations:
+"**{{user_name}}**님! {{visit_month}} {{visit_times}}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
+🌡️{{visit_month}} {{visit_times}}의 {{visit_region}}의 평균 기온은 **{{average_temperature}}**입니다. 여행에 참고하시길 바랍니다. \n
 
 **{{가맹점명}}**:
 - 주소: {{주소}}
-- {{visit_month}}월 {{visit_region}} 지역에서 {{user_age}}의 방문 비율이 {{age_col}}%로 {{user_name}}님과 비슷한 연령대의 고객이 많이 찾았습니다.
+- {{visit_month}} {{visit_region}} 지역에서 {{user_age}}의 방문 비율이 {{age_col}}%로 {{user_name}}님과 비슷한 연령대의 고객이 많이 찾았습니다.
 - {{user_name}}님이 방문하시려는 **{{weekdays[weekday_idx]}}**에는 방문 비중이 {{weekday_col}}%입니다.
 - {{visit_times}}의 이용 건수 비중은 {{time_col}}% 으로 높은/낮은 편입니다.
-- 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 ** {{월별 업종별 이용금액 분위수 구간}} **입니다. 방문하시기 전에 참고하세요!
+- 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
 - 주변 관광지: 맛집과 가까운 곳에 **{{맛집 주변 관광지}}**이(가) 있습니다.
 
 즐거운 식사 되시길 바랍니다!"
 
-**When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format with specific rate.
-**When a user asks follow-on questions about the last recommendation, answer it by referring to the prevous_chat_history
+**For Specific Data Requests:**
+- If the user's question is asking for specific data (e.g., "What is the local visitation rate for 공명식당?"), provide only the requested information in a simple and polite format with the specific value without Structured Format for general recommendations.
+
+**For Comparison Requests:**
+- If the user's question involves a comparison (e.g., "Which restaurant has a higher local visitation rate?"), provide only the comparison result and relevant values without Structured Format for general recommendations.
+
+**For Statistical Data Requests:**
+- If the user's question is about statistical analysis (e.g., "What is the average local visitation rate for Chinese restaurants in the southern region?"), provide the specific statistical value directly and clearly without Structured Format for general recommendations.
+  Example:
+  "The average local visitation rate for Chinese restaurants in the southern region is 53.2%."
+
+
 
 Use the provided context and user information strictly:
 [context]: {context}
@@ -131,6 +143,8 @@ Use the provided context and user information strictly:
 """
 prompt = ChatPromptTemplate.from_template(template)
 
+# **When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format with specific rate.
+# **When a user asks follow-on questions about the last recommendation, answer it by referring to the prevous_chat_history
 
 ### 7. Google Gemini 모델 생성 ###
 # @st.cache_resource
@@ -189,12 +203,17 @@ rag_chain = (
 st.subheader("🍊:orange[제주°C]에게 질문하기")
 st.divider()
 
-say_hi_to_user = """안녕하세요!  
-제주도의 지역/시간별 기온 데이터에 기반하여 맛집을 추천하는 :orange[**친절한 제주°C**]입니다.  
-언제든지 질문해주세요."""
+say_hi_to_user = f"""안녕하세요! 🍊 제주도 맛집 추천 AI :orange[**친절한 제주°C**]입니다.  
+저는 제주도의 지역별, 시간대별 평균 기온 데이터와 함께 사용자 맞춤형 맛집을 추천해드려요! \n\n
+왼쪽 사이드바에 입력된 :rainbow[**{user_name}**]님의 정보를 바탕으로 더욱 정확한 추천을 해드립니다.  
+제주 여행 중 "**추자도에 있는 가정식 맛집을 추천받고 싶다**"거나 "**두 식당의 현지인 방문 비중을 비교하고 싶다**"면, 저에게 언제든지 질문해주세요! \n\n
+**✈️ 제주 여행을 더 즐겁고 맛있게 만들어드릴게요!**  
+궁금한 점이 있으면 언제든 편하게 물어보세요. 😊
+"""
+
 
 user_input = st.chat_input(
-    placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 두 개만 추천해줘)",
+    placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 추천해줘)",
     max_chars=150,
 )
 
