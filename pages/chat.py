@@ -1,6 +1,5 @@
 # chat.py
 import streamlit as st
-from datetime import datetime
 
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -42,12 +41,12 @@ embeddings  = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 
 
 ## 2. Chroma 벡터스토어 로드 ###
-vectorstore = Chroma(persist_directory="./sample_1000_vectorstore", embedding_function=embeddings)
+vectorstore = Chroma(persist_directory="./restaurant_vectorstore_ALL", embedding_function=embeddings)
 temperature_vectorstore = Chroma(persist_directory="./temperature_vectorstore", embedding_function=embeddings)
 
 
 ## 3. 사용자 정보 기반 지역 필터링 ###
-user_name = st.session_state.get('user_name', None)
+user_name = st.session_state.get('user_name', '사용자')
 user_age = st.session_state.get('age', None)
 visit_times = st.session_state.get('visit_times', None)
 visit_region = st.session_state.get('region', [])
@@ -56,19 +55,21 @@ visit_dates = st.session_state.get('visit_dates', None)
 visit_month = f"{visit_dates.month}월" if visit_dates else ""
 
 ### 3-1. 사용자 데이터와 일치하는 컬럼명 텍스트 생성 ###
-age_col = f'{user_age} 회원수 비중'
-
-weekday_idx = visit_dates.weekday()
-weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
-weekday_col = f'{weekdays[weekday_idx]} 이용건수 비중'
-
-time_col = {
-    "아침 (05-11시)": "5시-11시 이용건수 비중",
-    "점심 (12-13시)": "12시-13시 이용건수 비중",
-    "오후 (14-17시)": "14시-17시 이용건수 비중",
-    "저녁 (18-22시)": "18시-22시 이용건수 비중",
-    "심야 (23-04시)": "23시-4시 이용건수 비중"
+if user_age:
+   age_col = f'{user_age} 회원수 비중'
+if visit_dates:
+    weekday_idx = visit_dates.weekday()
+    weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+    weekday_col = f'{weekdays[weekday_idx]} 이용건수 비중'
+if visit_times:
+    time_col = {
+        "아침 (05-11시)": "5시-11시 이용건수 비중",
+        "점심 (12-13시)": "12시-13시 이용건수 비중",
+        "오후 (14-17시)": "14시-17시 이용건수 비중",
+        "저녁 (18-22시)": "18시-22시 이용건수 비중",
+        "심야 (23-04시)": "23시-4시 이용건수 비중"
     }.get(visit_times)
+
 
 ### 4. 기온 데이터 로드 ###
 temp_retriever = temperature_vectorstore.as_retriever(
@@ -107,22 +108,24 @@ The following columns are relevant for finding the best recommendations:
 
 **Structured Format** (for general recommendations):
 "**{{user_name}}**님! {{visit_month}}월 {{visit_times}}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
-{{visit_month}}월 {{visit_times}}의 {{visit_region}}의 평균 기온은 {{average_temperature}}입니다. 여행에 참고하시길 바랍니다. \n
+🌡️{{visit_month}}월 {{visit_times}}의 {{visit_region}}의 평균 기온은 **{{average_temperature}}**입니다. 여행에 참고하시길 바랍니다. \n
 
 **{{가맹점명}}**:
 - 주소: {{주소}}
 - {{visit_month}}월 {{visit_region}} 지역에서 {{user_age}}의 방문 비율이 {{age_col}}%로 {{user_name}}님과 비슷한 연령대의 고객이 많이 찾았습니다.
-- {{user_name}}님이 방문하시려는 {{weekdays[weekday_idx]}}에는 방문 비중이 {{weekday_col}}%입니다.
+- {{user_name}}님이 방문하시려는 **{{weekdays[weekday_idx]}}**에는 방문 비중이 {{weekday_col}}%입니다.
 - {{visit_times}}의 이용 건수 비중은 {{time_col}}% 으로 높은/낮은 편입니다.
-- 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
+- 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 ** {{월별 업종별 이용금액 분위수 구간}} **입니다. 방문하시기 전에 참고하세요!
 - 주변 관광지: 맛집과 가까운 곳에 **{{맛집 주변 관광지}}**이(가) 있습니다.
 
 즐거운 식사 되시길 바랍니다!"
 
 **When providing specific details for questions like:** "What is the local visitation rate for 공명식당?" Answer only the specific information, in simple and polite format with specific rate.
+**When a user asks follow-on questions about the last recommendation, answer it by referring to the prevous_chat_history
 
 Use the provided context and user information strictly:
 [context]: {context}
+[previous_chat_history]: {{previous_chat_history}}
 ---
 [질의]: {query}
 """
@@ -192,7 +195,7 @@ say_hi_to_user = """안녕하세요!
 
 user_input = st.chat_input(
     placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 두 개만 추천해줘)",
-    max_chars=150
+    max_chars=150,
 )
 
 chat_col1, search_col2 = st.columns([2, 1])
@@ -213,7 +216,7 @@ with chat_col1:
         ]
     # 필수 정보가 입력되지 않았을 경우 오류 메시지 출력
     if not (user_age and visit_dates and visit_times and visit_region):
-        st.error("사용자 정보(연령대, 방문 날짜, 시간, 지역)가 누락되었습니다. \n왼쪽 사이드바에서 정보를 입력해 주세요.")
+        st.error("사용자 정보(연령대, 방문 날짜, 시간, 지역)가 누락되었습니다. \n왼쪽 사이드바에서 정보를 입력해 주세요.", icon=":material/error:")
         st.stop()  # 이후 코드를 실행하지 않도록 중단
 
 
@@ -235,7 +238,8 @@ with chat_col1:
                 f"user_age: {user_age}\n"
                 f"visit_region: {visit_region}\n"
                 f"visit_month: {visit_month}\n"
-                f"visit_times: {visit_times}"
+                f"visit_times: {visit_times}\n"
+                f"previous chat histroy: {st.session_state.messages}"
             )
             # chain.invoke에서 개별 변수로 전달
             assistant_response = rag_chain.invoke(query_text)
