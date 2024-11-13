@@ -34,7 +34,7 @@ def show_tab_trend():
                 
       # 선택한 MCT_TYPE이 5개를 넘으면 경고 메시지 표시
       if len(graph_selected_type) > 5:
-        st.warning("⚠️ 카테고리는 최대 5개까지 적용됩니다.")
+        st.warning("⚠️ 카테고리는 최대 5개까지 적용됩니다.", icon=":material/warning:")
         graph_selected_type = graph_selected_type[:5]  # max 5
                   
       st.caption("""1: 상위 10% 이하<br>2: 상위 10\~25%<br>3: 상위 25\~50%<br>4: 상위 50\~75%<br> 
@@ -112,13 +112,13 @@ def show_tab_trend():
 
     # 필터링된 데이터가 없을 경우
     if map_selected_ym is None and map_selected_type is None:
-      st.info("월과 Type을 선택해주세요.")
+      st.info("월과 Type을 선택해주세요.", icon=":material/info:")
     elif map_selected_ym is None:
-      st.info("월을 선택해주세요.")
+      st.info("월을 선택해주세요.", icon=":material/info:")
     elif map_selected_type is None:
-      st.info("Type을 선택해주세요.")
+      st.info("Type을 선택해주세요.", icon=":material/info:")
     elif filtered_data.empty:
-      st.warning("해당하는 매장이 없습니다.")
+      st.warning("해당하는 매장이 없습니다.", icon=":material/warning:")
     else:
       # 현지인 비중 백분율로 변환
       filtered_data.loc[:, 'LOCAL_UE_CNT_RAT'] = filtered_data['LOCAL_UE_CNT_RAT'].astype(str) + '%'

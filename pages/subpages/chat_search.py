@@ -44,12 +44,12 @@ def show_search_restaurant():
                   # checkbox 상태에 따라 favs 업데이트
                   if checkbox and idx not in st.session_state.favs:
                       st.session_state.favs.append(idx)
-                      st.info(f"**{row['MCT_NM']}**이 저장되었습니다.")
+                      st.info(f"**{row['MCT_NM']}**이 저장되었습니다.", icon=":material/bookmarks:")
                   elif not checkbox and idx in st.session_state.favs:
                       st.session_state.favs.remove(idx)
-                      st.warning(f"**{row['MCT_NM']}**이 삭제되었습니다.")
+                      st.warning(f"**{row['MCT_NM']}**이 삭제되었습니다.", icon=":material/delete:")
           else:
-             st.error("검색 결과가 없습니다.")
+             st.error("검색 결과가 없습니다.", icon=":material/error:")
       
       # 버튼
       if st.button("지도로 확인하기"):

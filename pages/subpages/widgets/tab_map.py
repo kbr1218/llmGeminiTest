@@ -42,5 +42,5 @@ def show_tab_map(fav_restaurants):
     ).add_to(m)
     st_folium(m, height=400, use_container_width=True)
 
-    st.warning("저장된 맛집이 없습니다.")
+    st.warning("저장된 맛집이 없습니다.", icon=":material/info:")
 

@@ -48,7 +48,7 @@ def show_edit_modal():
    if st.button("수정 내용 저장"):
       # 방문지역 최소 하나 이상 선택하도록 설정
       if not region:
-         st.warning("방문 지역을 최소 1개 이상 선택해주세요.")
+         st.warning("방문 지역을 최소 1개 이상 선택해주세요.", icon=":material/warning:")
       else:
          # session_state에 수정된 값 저장
          st.session_state['age'] = age
@@ -57,6 +57,6 @@ def show_edit_modal():
          st.session_state['region'] = region
 
          # 알림 메시지
-         st.success("수정된 정보가 저장되었습니다!")
+         st.success("수정된 정보가 저장되었습니다!", icon=":material/bookmarks:")
          st.rerun()  # 페이지 새로고침
 
