@@ -18,7 +18,7 @@ import os
 botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang3.png'
 
 # 페이지 제목 설정
-st.set_page_config(page_title="chat", page_icon="💬", layout="wide",
+st.set_page_config(page_title="제주°C", page_icon="💬", layout="wide",
                    initial_sidebar_state='expanded')
 
 from pages.subpages import sidebar, chat_search
@@ -70,7 +70,6 @@ if visit_times:
         "심야 (23-04시)": "23시-4시 이용건수 비중"
     }.get(visit_times)
 
-
 ### 4. 기온 데이터 로드 ###
 temp_retriever = temperature_vectorstore.as_retriever(
     search_type="mmr",   
@@ -113,7 +112,7 @@ Structured Format for general recommendations:
 
 **{{가맹점명}}**:
 - 주소: {{주소}}
-- {{visit_month}} {{visit_region}} 지역에서 {{user_age}}의 방문 비율이 {{age_col}}%로 {{user_name}}님과 비슷한 연령대의 고객이 많이 찾았습니다.
+- {{visit_month}} {{visit_region}} 지역에서 {user_age}의 방문 비율이 {{age_col}}%로 {user_name}님과 비슷한 연령대의 고객이 많이 찾았습니다.
 - {{user_name}}님이 방문하시려는 **{{weekdays[weekday_idx]}}**에는 방문 비중이 {{weekday_col}}%입니다.
 - {{visit_times}}의 이용 건수 비중은 {{time_col}}% 으로 높은/낮은 편입니다.
 - 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
@@ -134,7 +133,7 @@ Structured Format for general recommendations:
 
 Use the provided context and user information strictly:
 [context]: {context}
-[previous_chat_history]: {{previous_chat_history}}
+[previous_chat_history]: {previous_chat_history}
 ---
 [질의]: {query}
 """
@@ -160,32 +159,44 @@ def load_model():
 
 ### 8. 검색 결과 필터링 & 병합 함수 ###
 # visit_region 데이터 필터링
-def filter_results_by_region(docs, visit_region):
+def filter_restaurant_docs(docs, visit_region):
     return [doc for doc in docs if doc.metadata.get('지역') in visit_region]
+
+# 기온 데이터는 기준년월 + 지역으로 필터링
+def filter_temperature_docs(docs, visit_region, visit_month):
+    return [
+        doc for doc in docs 
+        if doc.metadata.get('지역') in visit_region and doc.metadata.get('기준년월') == visit_month
+    ]
 
 def format_docs(docs):
   return "\n\n".join(doc.page_content for doc in docs)
 
 def retrieve_and_filter_context(_input):
-    # temp_retriever와 retriever 각각 호출 및 필터링 후 병합
-    temp_docs = filter_results_by_region(temp_retriever.invoke(_input), visit_region)
-    main_docs = filter_results_by_region(retriever.invoke(_input), visit_region)
+    # 맛집 데이터와 기온 데이터에서 문서 가져오기
+    temp_docs = temp_retriever.invoke(_input)
+    main_docs = retriever.invoke(_input)
+
+    # temp_retriever와 retriever 각각 필터링 함수 적용 후 병합
+    filtered_main_docs = filter_restaurant_docs(main_docs, visit_region)
+    filtered_temp_docs = filter_temperature_docs(temp_docs, visit_region, visit_month)
 
     # 필터링된 결과가 없다면 오류 메시지 반환
-    if not temp_docs and not main_docs:
+    if not filtered_temp_docs and not filtered_main_docs:
         return "말씀하신 지역에 대한 맛집 데이터를 찾을 수 없습니다. 사이드바에서 방문하실 지역을 다시 선택해주세요."
     # 병합 후 형식화
-    return format_docs(temp_docs + main_docs)
+    return format_docs(filtered_temp_docs + filtered_main_docs)
 
 ## 9. LangChain 체인 구성 ###
 rag_chain = (
   {"query":RunnablePassthrough(),
     "context": retrieve_and_filter_context,
+    "previous_chat_history":RunnablePassthrough(),
     "user_name":RunnablePassthrough(),
     "user_age":RunnablePassthrough(),
     "visit_times":RunnablePassthrough(),
     "visit_month":RunnablePassthrough(),
-    "visit_region":RunnablePassthrough()
+    "visit_region":RunnablePassthrough(),
   }
   # question(사용자의 질문) 기반으로 연관성이 높은 문서 retriever 수행 >> format_docs로 문서를 하나로 만듦
   | prompt               # 하나로 만든 문서를 prompt에 넘겨주고
@@ -195,6 +206,7 @@ rag_chain = (
 
 
 ### 10. Streamlit UI ###
+# 페이지 전환 상태 확인 (제주도)
 st.subheader("🍊:orange[제주°C]에게 질문하기")
 st.divider()
 
@@ -204,7 +216,6 @@ say_hi_to_user = f"""안녕하세요! 🍊 제주도 맛집 추천 AI :orange[**
 "**추자도에 있는 가정식 맛집을 추천받고 싶다**"거나 "**추천받은 두 식당의 현지인 방문 비중을 비교하고 싶다**"면, 저에게 언제든지 질문해주세요! \n\n
 **✈️ 제주 여행을 더 즐겁고 맛있게 만들어드릴게요!**  
 """
-
 
 user_input = st.chat_input(
     placeholder="질문을 입력하세요. (예: 추자도에 있는 가정식 맛집을 추천해줘)",
@@ -243,6 +254,9 @@ with chat_col1:
         with st.chat_message("user", avatar="🧑🏻"):
             st.markdown(user_input)
 
+        # 대화 기록을 문자열로 변환
+        previous_chat_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages])
+
         # 추천 생성 중 스피너
         with st.spinner("맛집 찾는 중..."):
             query_text = (
@@ -252,7 +266,7 @@ with chat_col1:
                 f"visit_region: {visit_region}\n"
                 f"visit_month: {visit_month}\n"
                 f"visit_times: {visit_times}\n"
-                f"previous chat histroy: {st.session_state.messages}"
+                f"previous_chat_histroy:{previous_chat_history}"
             )
             # chain.invoke에서 개별 변수로 전달
             assistant_response = rag_chain.invoke(query_text)
