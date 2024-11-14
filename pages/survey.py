@@ -311,7 +311,8 @@ else:
 
                     # 시작하기 버튼 (or 로그인 버튼)
                     st.write("")
-                    start_button = st.page_link("pages/chat.py",
-                                                label="[**다음으로**👉]",
-                                                use_container_width=True
-                                                )
+                    start_button = st.button("**다음으로**👉",
+                         type='primary',
+                         use_container_width=True)
+                    if start_button:
+                        st.switch_page("./pages/chat.py")
