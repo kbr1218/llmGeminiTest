@@ -21,7 +21,8 @@ botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/
 st.set_page_config(page_title="제주°C", page_icon="💬", layout="wide",
                    initial_sidebar_state='expanded')
 
-from pages.subpages import sidebar, chat_search
+from pages.subpages import sidebar
+from pages.subpages import chat_search
 
 # 사이드바
 with st.sidebar:
@@ -102,19 +103,24 @@ When making recommendations, consider the user's visiting day, age group, and pr
 You have to start with a summary of the relevant temperature information from the retrieved context for {visit_month} and {visit_times}, and then continue with restaurant recommendations.
 
 The following columns are relevant for finding the best recommendations:
-- Weekday column: {{day_column}}
-- Time slot column: {{time_column}}
-- Age group column: {{age_column}}
+- Weekday column: {weekdays_col}
+- Time slot column: {time_col}
+- Age group column: {age_col}
+
+User's information:
+- user's name: {user_name}
+- user's age: {user_age}
+
 
 Structured Format for general recommendations:
-"**{{user_name}}**님! {{visit_month}} {{visit_times}}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
-🌡️{{visit_month}} {{visit_times}}의 {{visit_region}}의 평균 기온은 **{{average_temperature}}**입니다. 여행에 참고하시길 바랍니다. \n
+"**{{user_name}}**님! {visit_month} {visit_times}에 {{visit_region}} 지역에서 인기 있는 맛집을 추천드리겠습니다! \n
+🌡️{visit_month} {visit_times}의 {{visit_region}}의 평균 기온은 **{{average_temperature}}**입니다. 여행에 참고하시길 바랍니다. \n
 
 **{{가맹점명}}**:
 - 주소: {{주소}}
-- {{visit_month}} {{visit_region}} 지역에서 {user_age}의 방문 비율이 {{age_col}}%로 {user_name}님과 비슷한 연령대의 고객이 많이 찾았습니다.
-- {{user_name}}님이 방문하시려는 **{{weekdays[weekday_idx]}}**에는 방문 비중이 {{weekday_col}}%입니다.
-- {{visit_times}}의 이용 건수 비중은 {{time_col}}% 으로 높은/낮은 편입니다.
+- {visit_month} {{visit_region}} 지역에서 {user_age}의 방문 비율이 {{value of age_col}}%로 {user_name}님과 비슷한 연령대의 고객이 많이 찾았습니다.
+- {user_name}님이 방문하시려는 **{{weekdays_col}}**에는 방문 비중이 {{value of weekday_col}}%입니다.
+- {visit_times}의 이용 건수 비중은 {time_col}% 으로 높은/낮은 편입니다.
 - 이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
 - 주변 관광지: 맛집과 가까운 곳에 **{{맛집 주변 관광지}}**이(가) 있습니다.
 
@@ -131,11 +137,14 @@ Structured Format for general recommendations:
   Example:
   "The average local visitation rate for Chinese restaurants in the southern region is 53.2%."
 
+**For Region-Restricted Requests:**
+- If the user's query is about a restaurant or place in a region outside the selected {{visit_region}}, respond with: "(e.g.) 정보를 알 수 없습니다. 사이드바의 방문 지역을 다시 확인해주세요."
+
 Use the provided context and user information strictly:
 [context]: {context}
 [previous_chat_history]: {previous_chat_history}
 ---
-[질의]: {query}
+[질문]: {query}
 """
 prompt = ChatPromptTemplate.from_template(template)
 
@@ -197,6 +206,9 @@ rag_chain = (
     "visit_times":RunnablePassthrough(),
     "visit_month":RunnablePassthrough(),
     "visit_region":RunnablePassthrough(),
+    "age_col":RunnablePassthrough(),
+    "weekdays_col":RunnablePassthrough(),
+    "time_col":RunnablePassthrough(),
   }
   # question(사용자의 질문) 기반으로 연관성이 높은 문서 retriever 수행 >> format_docs로 문서를 하나로 만듦
   | prompt               # 하나로 만든 문서를 prompt에 넘겨주고
@@ -260,7 +272,8 @@ with chat_col1:
         # 추천 생성 중 스피너
         with st.spinner("맛집 찾는 중..."):
             query_text = (
-                f"질문: {user_input}\n\n"
+                f"질문: {user_input}\n\n\n"
+                "User's Information: "
                 f"user_name: {user_name}\n"
                 f"user_age: {user_age}\n"
                 f"visit_region: {visit_region}\n"
