@@ -47,7 +47,7 @@ st.markdown(f"""
                 기상청의 <strong>'제주도 지역별 시간대별 평균 기온 데이터'</strong>와 함께 신한카드 <strong>'제주 가맹점 이용 데이터'</strong>를 기반으로<br>
                 삼춘한테 딱 맞는 맛집을 추천해드릴게<span class="color_orange">마씸 🍊</span>
                 <br><hr>                
-                <strong class="color_blue">🌊제주° Sea</strong> 서비스도 한 번 써봐 봅서! <br>
+                <strong class="color_blue">🌊제주도 SEA</strong> 서비스도 한 번 써봐 봅서! <br>
                 제주도 바다의 <strong>'지역별 시간대별 수온 데이터'</strong>를 활용해 수영하기 좋은 해수욕장을 찾아주고, <br>
                 <strong>적절한 물놀이 복장</strong>과 함께 해수욕장 <strong>근처 맛집</strong>까지 알차게 알려줄<span class="color_blue">마씸 🏝️</span><br>
                 바다에서 놀고 맛있는 식사까지 한 번에 즐기십서!
@@ -67,7 +67,7 @@ st.markdown(f"""
             <div class="chat-text">
                 우리 맛집 추천 서비스를 쓰려면 먼저 5가지 질문에 대답해줘야 함서. <br>
                 왜냐면, 그 대답에 맞춰서 <strong>맛집</strong>을 추천해줄거라<span class="color_orange">마씸 🍊</span><br>
-                <strong class="color_orange">친절한 제주°C</strong>와 <strong class="color_blue">제주° Sea</strong>로 맛있는 제주 여행, 즐거운 바다 여행을 모두 즐겨보십서.</span><br>
+                <strong class="color_orange">친절한 제주°C</strong>와 <strong class="color_blue">제주도 SEA</strong>로 맛있는 제주 여행, 즐거운 바다 여행을 모두 즐겨보십서.</span><br>
                 <strong>출발 하쿠다!<strong> 
             </div>
         </div>
