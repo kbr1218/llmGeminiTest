@@ -86,7 +86,7 @@ else:
 
     ##########################
     ##### 질문 2) 연령대 #####
-    time.sleep(1)  # 성별 대답 후 잠시 대기
+    time.sleep(0.5)  # 성별 대답 후 잠시 대기
     st.markdown(f"""
         <br>
         <div class="chat-container">
@@ -132,7 +132,7 @@ else:
 
         ############################
         ##### 질문 3) 방문날짜 #####
-        time.sleep(1)                   # 연령대 대답 후 잠시 대기
+        time.sleep(0.5)                   # 연령대 대답 후 잠시 대기
         st.markdown(f"""
             <br>
             <div class="chat-container">
@@ -190,7 +190,7 @@ else:
 
             ###############################
             ##### 질문 4) 방문 시간대 #####
-            time.sleep(1)
+            time.sleep(0.5)
             st.markdown(f"""
                 <br>
                 <div class="chat-container">
@@ -242,7 +242,7 @@ else:
 
                 #############################
                 ##### 질문 5) 방문 지역 #####
-                time.sleep(1)
+                time.sleep(0.5)
                 st.markdown(f"""
                     <br>
                     <div class="chat-container">
@@ -293,7 +293,7 @@ else:
                         </div>
                     """, unsafe_allow_html=True)
 
-                    time.sleep(1)
+                    time.sleep(0.5)
                     st.markdown(f"""
                         <br>
                         <div class="chat-container">
