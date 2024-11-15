@@ -12,7 +12,7 @@ from langchain_teddynote import logging
 from functions import load_model
 
 # 챗봇 이미지 링크 선언
-botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang3.png'
+botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejudoC.png'
 
 # 페이지 제목 설정
 st.set_page_config(page_title="제주°C", page_icon="💬", layout="wide",

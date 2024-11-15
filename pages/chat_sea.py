@@ -5,13 +5,12 @@ from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 
 from functions import load_model
 
 # 이미지 링크 선언
-botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang_sea.png'
+botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejudoSea.png'
 seaImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/sea_img.jpg'
 
 # 페이지 제목 설정
@@ -114,7 +113,7 @@ st.caption("🚀 2024 빅콘테스트 (생성형 AI 분야) 팀: 헬로빅콘")
 st.divider()
 
 say_hi_to_user_sea = """🐬 제주도 해수욕장에 대해 궁금한 점을 물어보세요.  
-입력하신 월 정보를 토대로 해수욕장을 추천드리고 있어요 :)"""
+사전에 입력하신 **방문 일자** 정보를 토대로 해수욕장을 추천드리고 있어요 :)"""
 
 chat_input = st.chat_input(
     placeholder="질문을 입력하세요. (예: 우도에 있는 해수욕장을 추천해줘)",
@@ -136,8 +135,8 @@ with chat_col1:
     st.markdown(
         """안녕하세요😁 제주도 해수욕장 추천 챗봇 🐬:blue[**제주도 SEA**]입니다 :)  
         제주도 바다 수온을 기반으로 수영하기 좋은 **해수욕장**🏖️과 **물놀이 복장**🩱을 추천하고,  
-        추천된 해수욕장 반경 1km 내 맛집을 추천해드립니다🍊  
-        (맛집 데이터: 신한카드 제주 가맹점 이용 데이터)
+        추천된 해수욕장 반경 1km 내 맛집을 추천해드립니다🍴  
+        :gray[(맛집 데이터: 신한카드 제주 가맹점 이용 데이터)]
         """
     )
 
@@ -166,7 +165,7 @@ with chat_col1:
         else:
             with st.chat_message(role, avatar=avatar):
                 st.markdown(message["content"])
-    st.write(f"hello {st.session_state.context}")
+
     if chat_input:
         st.session_state["messages_sea"].append({"role": "user", "content": chat_input})
         with st.chat_message("user", avatar="🧑🏻"):
