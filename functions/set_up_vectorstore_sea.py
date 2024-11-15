@@ -1,11 +1,11 @@
+# set_up_vectorstore_sea.py
 import os
 import pandas as pd
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 
 # 환경 설정
-DATA_PATH = 'C:\\workspaces\\llmGeminiTest\\data\\jeju_beach_korean.csv'
-VECTOR_DB_DIR = 'C:\\workspaces\\llmGeminiTest\\vector_database_sea'  # 변경된 경로
+DATA_PATH = './vector_database_sea'
 EMBEDDING_MODEL_NAME = "jhgan/ko-sroberta-multitask"
 
 # 데이터 로드
@@ -25,7 +25,7 @@ data_texts = [
 
 # 벡터 DB 생성 및 저장
 try:
-    vectorstore = Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings_model)
+    vectorstore = Chroma(persist_directory=DATA_PATH, embedding_function=embeddings_model)
     vectorstore.add_texts(texts=data_texts, embeddings=[embeddings_model.embed_query(text) for text in data_texts])
     print("벡터 DB 생성 및 저장 완료.")
 except Exception as e:
