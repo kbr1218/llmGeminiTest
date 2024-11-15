@@ -60,6 +60,7 @@ def show_sidebar():
                 use_container_width=True):
       st.session_state['jeju_sea'] = True
       st.switch_page("./pages/chat_sea.py")  
+      st.rerun()
       
   st.markdown("<hr>", unsafe_allow_html=True)
 
