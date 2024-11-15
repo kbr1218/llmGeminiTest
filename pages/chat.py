@@ -6,13 +6,10 @@ from langchain.embeddings import HuggingFaceEmbeddings
 
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
-
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 
 from langchain_teddynote import logging
-from dotenv import load_dotenv
-import os
+from functions import load_model
 
 # 챗봇 이미지 링크 선언
 botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang3.png'
@@ -31,8 +28,6 @@ with st.sidebar:
 
 ##########################
 ### 00. 환경변수 로드 ###
-load_dotenv()
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 # langsmith 추적 설정
 logging.langsmith("bigcon_langchain_test")
 
@@ -56,20 +51,17 @@ visit_dates = st.session_state.get('visit_dates', None)
 visit_month = f"{visit_dates.month}월" if visit_dates else ""
 
 ### 3-1. 사용자 데이터와 일치하는 컬럼명 텍스트 생성 ###
-if user_age:
-   age_col = f'{user_age} 회원수 비중'
-if visit_dates:
-    weekday_idx = visit_dates.weekday()
-    weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
-    weekday_col = f'{weekdays[weekday_idx]} 이용건수 비중'
-if visit_times:
-    time_col = {
-        "아침 (05-11시)": "5시-11시 이용건수 비중",
-        "점심 (12-13시)": "12시-13시 이용건수 비중",
-        "오후 (14-17시)": "14시-17시 이용건수 비중",
-        "저녁 (18-22시)": "18시-22시 이용건수 비중",
-        "심야 (23-04시)": "23시-4시 이용건수 비중"
-    }.get(visit_times)
+age_col = f'{user_age} 회원수 비중' if user_age else None
+weekday_idx = visit_dates.weekday() if visit_dates else None
+weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+weekdays_col = f'{weekdays[weekday_idx]} 이용건수 비중' if weekday_idx is not None else None
+time_col = {
+    "아침 (05-11시)": "5시-11시 이용건수 비중",
+    "점심 (12-13시)": "12시-13시 이용건수 비중",
+    "오후 (14-17시)": "14시-17시 이용건수 비중",
+    "저녁 (18-22시)": "18시-22시 이용건수 비중",
+    "심야 (23-04시)": "23시-4시 이용건수 비중"
+}.get(visit_times, None)
 
 ### 4. 기온 데이터 로드 ###
 temp_retriever = temperature_vectorstore.as_retriever(
@@ -87,7 +79,6 @@ retriever = vectorstore.as_retriever(
                    }
 )
 
-# Do not include unnecessary information. 
 ### 6. 프롬프트 템플릿 설정 ###
 template = """
 You are an assistant named '친절한 제주°C' specializing in recommending restaurants in Jeju Island based on specific data.
@@ -150,20 +141,11 @@ prompt = ChatPromptTemplate.from_template(template)
 
 
 ### 7. Google Gemini 모델 생성 ###
-# @st.cache_resource
-def load_model():
-    system_instruction = """당신은 제주도 여행객에게 맛집을 추천하는 '친절한 제주°C' 챗봇입니다. 
-        각 대화에서 필요한 정보를 정확히 제공하고, 사용자의 질문이 후속 질문인 경우 이전 대화의 내용을 바탕으로 답변하세요.
-        필요한 경우 간결하게 정보를 제공하고, 대화의 맥락을 유지하여 질문과 관계 없는 정보를 생략하세요.
-        """
-    model = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
-        temperature=0.3,
-        max_tokens=5000,
-        system_instruction=system_instruction
-    )
-    print("model loaded...")
-    return model
+system_instruction = """당신은 제주도 여행객에게 맛집을 추천하는 '친절한 제주°C' 챗봇입니다. 
+각 대화에서 필요한 정보를 정확히 제공하고, 사용자의 질문이 후속 질문인 경우 이전 대화의 내용을 바탕으로 답변하세요.
+필요한 경우 간결하게 정보를 제공하고, 대화의 맥락을 유지하여 질문과 관계 없는 정보를 생략하세요.
+"""
+llm = load_model.load_gemini(system_instruction)
 
 
 ### 8. 검색 결과 필터링 & 병합 함수 ###
@@ -212,13 +194,12 @@ rag_chain = (
   }
   # question(사용자의 질문) 기반으로 연관성이 높은 문서 retriever 수행 >> format_docs로 문서를 하나로 만듦
   | prompt               # 하나로 만든 문서를 prompt에 넘겨주고
-  | load_model()         # llm이 원하는 답변을 만듦
+  | llm                  # llm이 원하는 답변을 만듦
   | StrOutputParser()
 )
 
 
 ### 10. Streamlit UI ###
-# 페이지 전환 상태 확인 (제주도)
 st.subheader("🍊:orange[제주°C]에게 질문하기")
 st.caption("🚀 2024 빅콘테스트 (생성형 AI 분야) 팀: 헬로빅콘")
 st.divider()
@@ -284,7 +265,6 @@ with chat_col1:
             )
             # chain.invoke에서 개별 변수로 전달
             assistant_response = rag_chain.invoke(query_text)
-
         # Assistant 응답 기록에 추가 및 출력
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         with st.chat_message("assistant", avatar=botImgPath):
