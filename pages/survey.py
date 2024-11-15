@@ -3,7 +3,7 @@ import streamlit as st
 import datetime, time
 
 # 이미지 변수 선언
-botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/dolhareubang3.png'
+botImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejudoC.png'
 jejuMapImgPath = 'https://raw.githubusercontent.com/kbr1218/streamlitTest/main/imgs/jejuMap_3.png'
 
 # 페이지 제목 설정
@@ -302,7 +302,7 @@ else:
                                 <div class="chat-text">
                                     감사합니다.🙇‍♂️ <br>
                                     제주도 맛집을 찾기 위한 모든 질문이 끝났습니다. <br>
-                                    <strong>지역별 시간대별 기온</strong>과 함께 사용자 맞춤형 맛집을 <strong>추천받고 싶다면</strong>,
+                                    <strong>지역별 시간대별 기온</strong>과 함께 사용자 맞춤형 맛집을 <strong>추천받고 싶다면</strong>,<br>
                                     아래 버튼을 클릭해 <strong>다음 페이지로 넘어가주세요</strong>.
                                 </div>
                             </div>

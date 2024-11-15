@@ -50,14 +50,14 @@
 
 /* 챗봇 아이콘 */
 .chat-icon {
-  width: 70px;
+  width: 60px;
   margin-right: 5px;
   /* 말풍선과의 간격 */
 }
 
 /* 제주도씨 말풍선 텍스트 */
 .chat-bubble .chat-text {
-  font-size: 16px;
+  font-size: 15px;
   /* 말풍선 안 텍스트 크기 */
   line-height: 1.5;
   /* 텍스트 사이 높이 */
@@ -86,4 +86,10 @@
 /* 챗봇 아이콘 */
 .jejuMap-icon {
   width: 500px;
+}
+
+/* hr 태그 상하 마진 줄이기 */
+.custom-hr {
+  margin-top: 13px;
+  margin-bottom: 13px;
 }
