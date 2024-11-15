@@ -29,7 +29,7 @@ with st.sidebar:
 ##########################
 ### 00. 환경변수 로드 ###
 # langsmith 추적 설정
-logging.langsmith("bigcon_langchain_test")
+# logging.langsmith("bigcon_langchain_test")
 
 
 ### 1. HuggingFace 임베딩 생성 ###
@@ -112,7 +112,7 @@ Structured Format for general recommendations:
 - 📊{visit_month} {{visit_region}} 지역에서 {user_age}의 방문 비율이 {{value of age_col}}%로 {user_name}님과 비슷한 연령대의 고객이 많이 찾았습니다.
 - ✅{user_name}님이 방문하시려는 **{{weekdays_col}}**에는 방문 비중이 {{value of weekday_col}}%입니다.
 - ✅{visit_times}의 이용 건수 비중은 {time_col}% 으로 높은/낮은 편입니다.
-- ✅이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간는 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
+- ✅이 맛집의 월별 업종별 이용건수 분위수 구간은 {{월별 업종별 이용건수 비중}}에 속하며, 월별 업종별 이용금액 분위수 구간은 {{월별 업종별 이용금액 분위수 구간}}입니다. 방문하시기 전에 참고하세요!
 - 🚞주변 관광지: 맛집과 가까운 곳에 **{{맛집 주변 관광지}}**이(가) 있습니다.
 
 즐거운 식사 되시길 바랍니다!"
