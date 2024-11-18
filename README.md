@@ -1,3 +1,7 @@
+<div align="center">
+    <img src="/img/startImg1.png">
+</div>
+
 # RAG-Powered Chatbot using Gemini API and Streamlit🍊
 **: LLM 활용 제주도 맛집 추천 대화형 AI 서비스 "친절한 제주°C" (w/ 따뜻한 제주°SEA)**
 
@@ -55,23 +59,31 @@
 
 ## 🖥 서비스 화면
 - 초기 화면
-<div align="center">
-    <img src="/img/0_로그인.png" width="200">
+<div align='center'>
+    <img src="/img/01_시작화면.png" width="800">
 </div>
 <br><br>
 
 - 사전 질문
 <div align="center">
+    <img src="/img/02_질문화면_1.png" width="800">
+    <img src="/img/02_질문화면_7.png" width="800">
 </div>
 <br><br>
 
 - 제주°C & 제주°SEA 챗봇
 <div align="center">
+    <img src="/img/06_채팅화면_1_제주C초기화면.png" width="800">
+    <img src="/img/07_제주도sea_1_초기화면.png" width="800">
 </div>
 <br><br>
 
 - 부가 기능 (맛집 검색 및 저장/통계/제주 관광 지도)
 <div align="center">
+    <img src="/img/03_맛집저장_4_저장된맛집조회.png" width="800">
+    <img src="/img/04_트렌드_2_업종선택화면.png" width="800">
+    <img src="/img/04_트렌드_3_현지인방문비중.png" width="800">
+    <img src="/img/05_관광지_2_조회화면.png" width="800">
 </div>
 <br><br>
 
