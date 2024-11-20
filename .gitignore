@@ -27,6 +27,11 @@
 working/
 data/
 
+# 벡터스토어
+restaurant_vectorstore_ALL/
+temperature_vectorstore/
+vector_database_sea/
+
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
